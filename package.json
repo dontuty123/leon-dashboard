@@ -9,19 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "firebase": "^10.5.0",
+    "flowbite": "^1.8.1",
+    "next": "13.5.6",
+    "next-images": "^1.8.5",
     "react": "^18",
     "react-dom": "^18",
-    "next": "13.5.6"
+    "react-helmet": "^6.1.0"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
+    "daisyui": "^3.9.3",
+    "eslint": "^8",
+    "eslint-config-next": "13.5.6",
+    "file-loader": "^6.2.0",
     "postcss": "^8",
     "tailwindcss": "^3",
-    "eslint": "^8",
-    "eslint-config-next": "13.5.6"
+    "typescript": "^5"
   }
 }
