@@ -9,7 +9,7 @@ export default function Navbar() {
         <div className="w-full mx-autp items-center flex justify-between md:flex-nowrap flex-wrap md:px-10 px-4">
           <Link
             href={"/"}
-            className="text-white cursor-pointer text-sm uppercase hidden lg:inline-block font-semibold"
+            className="text-white cursor-pointer text-sm uppercase hidden hover:text-blue-300 lg:inline-block font-semibold"
           >
             Dashboard
           </Link>

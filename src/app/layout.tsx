@@ -34,11 +34,11 @@ export default function RootLayout({
             <SideBar />
           </div>
           <div className="flex-5">
-            <div className="relative bg-gray-200">
+            <div className="relative bg-gray-100">
               <Navbar />
               {/* Header */}
               <Header />
-              <div className=" px-14 mx-auto w-full -mt-24 min-h-[55vh]">
+              <div className="px-14 mx-auto w-full -mt-20 min-h-[55vh]">
                 {children}
               </div>
               <Footer />

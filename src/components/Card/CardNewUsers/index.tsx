@@ -8,12 +8,12 @@ export default function CardNewUsers() {
           <div className="flex flex-wrap items-center">
             <div className="relative w-full px-4 max-w-full flex-grow flex-1">
               <h3 className="font-semibold text-base text-blueGray-700">
-                Page visits
+                New Users
               </h3>
             </div>
             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
               <button
-                className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear divansition-all duration-150"
                 type="button"
               >
                 See all
@@ -21,103 +21,96 @@ export default function CardNewUsers() {
             </div>
           </div>
         </div>
-        <div className="block w-full overflow-x-auto">
+        <div className="w-full">
           {/* Projects table */}
-          <table className="items-center w-full bg-transparent border-collapse">
-            <thead>
-              <tr>
-                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Page name
-                </th>
-                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Visitors
-                </th>
-                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Unique users
-                </th>
-                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Bounce rate
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  /argon/
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  4,569
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  340
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                  46,53%
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  /argon/index.html
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  3,985
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  319
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-arrow-down text-orange-500 mr-4"></i>
-                  46,53%
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  /argon/charts.html
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  3,513
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  294
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-arrow-down text-orange-500 mr-4"></i>
-                  36,49%
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  /argon/tables.html
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  2,050
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  147
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                  50,87%
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  /argon/profile.html
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  1,795
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  190
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-arrow-down text-red-500 mr-4"></i>
-                  46,53%
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="items-center w-full bg-divansparent border-collapse">
+            <div className="flex w-full">
+              <div className="px-6 bg-blueGray-50 w-2/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                Email
+              </div>
+              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                Full Name
+              </div>
+              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                Phone
+              </div>
+              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                Role
+              </div>
+            </div>
+            <div>
+              <div className="flex w-full">
+                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                  thuc@pro.com
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Phạm Tri Thức
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  0923012302
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Owner
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                  thuc09982@pro.com
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Nguyễn Minh Thức
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  0936825913
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Admin
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                  alabatrap@gmail.vui
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Anh Lý Bà Ba
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  0122384612
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  User
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                  vogiasieucap@vip.pro
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Ta Là Võ Giả
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  0999999999
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  User
+                </div>
+              </div>
+              <div className="flex w-full">
+                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                  helloword@gmail.create
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Hello Word!
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  0000000000
+                </div>
+                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Admin
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

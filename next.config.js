@@ -1,4 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = require('next-images');
+const nextConfig = {}
 
 module.exports = nextConfig
