@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SideBar from "@/components/SideBar";
 import Navbar from "@/components/Navbar";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppProvider } from "@/context/app.context";
+import dynamic from "next/dynamic";
+
+const DynamicHeader = dynamic(() => import("@/components/Header"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,11 +44,11 @@ export default function RootLayout({
             <div className="relative bg-gray-100">
               <Navbar />
               {/* Header */}
-              <Header />
+              <DynamicHeader />
               <div className="px-14 mx-auto w-full -mt-20 min-h-[55vh]">
-                {children}
+                <AppProvider>{children}</AppProvider>
               </div>
-              <ToastContainer autoClose={1000}/>
+              <ToastContainer autoClose={1000} />
 
               <Footer />
             </div>

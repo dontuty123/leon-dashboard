@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Button from "@/components/Button";
 import classNames from "classnames";
 
@@ -20,7 +20,7 @@ export default function Pagination({
   handleNextPage,
 }: PaginateType) {
   //RENDER PAGINATION
-  const renderPagination = () => {
+  const renderPagination = useCallback(() => {
     let dotAfter = false;
     let dotBefore = false;
     const renderDotBefore = (index: number) => {
@@ -90,7 +90,7 @@ export default function Pagination({
           ></Button>
         );
       });
-  };
+  }, [pages, setCurPage, curPage]);
 
   return (
     <div className="mt-6 flex flex-wrap justify-center dark:text-black">

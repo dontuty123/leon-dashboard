@@ -33,23 +33,25 @@ export default function Signup() {
     if (signupInfo?.password == retypePassword) {
       const email = signupInfo.email;
       const password = signupInfo.password;
-      const newUser: IUser = {
-        email: email,
-        role: 0,
-        createAt: new Date().getTime().toString(),
-        address: "",
-        avatar: "",
-        description: "",
-        name: "",
-        phone: "",
-        zipcode: "",
-      };
 
       // create new user to authentication
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-
+          const newUser: IUser = {
+            id: user.uid,
+            email: email,
+            role: "user",
+            createAt: new Date().getTime(),
+            address: "",
+            avatar:
+              "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg",
+            description: "",
+            name: "no name",
+            phone: "",
+            zipcode: "",
+            country: "",
+          };
           // add new user to firestore
           addUser(user.uid, newUser);
 
@@ -60,7 +62,6 @@ export default function Signup() {
         .catch((error) => {
           const errorCode = error.message;
           setValidateError(errorCode);
-          console.log("error", errorCode);
         });
     }
   };

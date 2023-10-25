@@ -1,6 +1,6 @@
 import React from "react";
-import Dropdown from "../Dropdown";
 import Link from "next/link";
+import Dropdown from "../Dropdown";
 
 export default function Navbar() {
   return (

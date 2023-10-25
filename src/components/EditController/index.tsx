@@ -1,7 +1,53 @@
+"use client";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@/components/Button";
-import React from "react";
+import { useParams } from "next/navigation";
+import { onValue, ref, update } from "firebase/database";
+import { db } from "server/firebase";
+import { saveProfileToLS } from "@/utils/auth";
+import { AppContext } from "@/context/app.context";
 
-export default function EditUser() {
+export default function EditController() {
+  const { setProfile } = useContext(AppContext);
+  const [curProfile, setCurProfile] = useState<IUser>({
+    address: "",
+    avatar: "",
+    country: "",
+    createAt: 0,
+    description: "",
+    email: "",
+    name: "",
+    phone: "",
+    role: "user",
+    zipcode: "",
+  });
+  const { id } = useParams();
+
+  useEffect(() => {
+    const getcurProfile = ref(db, "users/" + id);
+    onValue(getcurProfile, (snapshot) => {
+      const data = snapshot.val();
+      setCurProfile(data);
+    });
+  }, [id]);
+
+  const handleChangeInput = ({
+    target,
+  }:
+    | React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCurProfile({
+      ...curProfile,
+      [target.name]: target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    update(ref(db, "users/" + id), curProfile);
+    setProfile(curProfile);
+    saveProfileToLS(curProfile);
+  };
+
   return (
     <div>
       <>
@@ -34,7 +80,9 @@ export default function EditUser() {
                     <input
                       type="text"
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      defaultValue="lucky.jesse"
+                      value={curProfile?.name}
+                      name="name"
+                      onChange={handleChangeInput}
                     />
                   </div>
                   <div className="relative w-full mb-3">
@@ -47,17 +95,45 @@ export default function EditUser() {
                     <input
                       type="email"
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      defaultValue="jesse@example.com"
+                      value={curProfile?.email}
+                      name="email"
+                      onChange={handleChangeInput}
                     />
                   </div>
                 </div>
 
-                <div className="w-full lg:w-6/12 px-4 flex justify-center">
-                  <img
-                    className="w-40 h-40 rounded-full"
-                    src="https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
-                    alt="Rounded avatar"
-                  />
+                <div className="  w-full h-fit lg:w-6/12 px-4 flex justify-center">
+                  <div className="relative">
+                    <img
+                      className=" w-40 h-40 rounded-full shadow-lg"
+                      src="https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
+                      alt="Rounded avatar"
+                    />
+                    <div className="absolute h-15 w-15 bottom-1 right-1 bg-slate-500 hover:bg-slate-400 rounded-lg text-white cursor-pointer">
+                      <svg
+                        className="w-6 h-6 mx-2 my-1 dark:text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 18"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                        />
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -78,7 +154,9 @@ export default function EditUser() {
                     <input
                       type="text"
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                      value={curProfile?.address}
+                      name="address"
+                      onChange={handleChangeInput}
                     />
                   </div>
                 </div>
@@ -91,9 +169,11 @@ export default function EditUser() {
                       Country
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      defaultValue="United State"
+                      value={curProfile?.country}
+                      name="country"
+                      onChange={handleChangeInput}
                     />
                   </div>
                 </div>
@@ -108,7 +188,9 @@ export default function EditUser() {
                     <input
                       type="text"
                       className=" px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 border-none"
-                      defaultValue="0989901328"
+                      value={curProfile?.phone}
+                      name="phone"
+                      onChange={handleChangeInput}
                     />
                   </div>
                 </div>
@@ -123,7 +205,9 @@ export default function EditUser() {
                     <input
                       type="text"
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      defaultValue="752-0012"
+                      value={curProfile?.zipcode}
+                      name="zipcode"
+                      onChange={handleChangeInput}
                     />
                   </div>
                 </div>
@@ -146,18 +230,20 @@ export default function EditUser() {
                     <textarea
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
                       rows={4}
-                      defaultValue="A beautiful UI Kit and Admin for NextJS & Tailwind CSS. It is Free
-                  and Open Source."
+                      value={curProfile?.description}
+                      name="description"
+                      onChange={handleChangeInput}
                     ></textarea>
                   </div>
                 </div>
                 <div className="flex justify-between w-full lg:w-12/12 px-4 items-baseline">
                   <span className="text-gray-400 text-xs font-extralight">
-                    Edit profile
+                    Edit curProfile
                   </span>
                   <Button
                     className="bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md"
                     contentButton="Submit"
+                    onClick={handleSubmit}
                   />
                 </div>
               </div>

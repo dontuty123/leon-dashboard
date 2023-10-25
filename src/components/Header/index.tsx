@@ -1,7 +1,6 @@
+"use client";
 import React from "react";
 import CardStats from "../Card/CardStats";
-
-// components
 
 export default function Header() {
   return (

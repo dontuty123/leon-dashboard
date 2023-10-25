@@ -194,6 +194,8 @@ export default function Products() {
         curCols={collumn}
         curRows={mockData}
         title="Product Dashboard"
+        preLink="products/edit"
+        isAddBtn={true}
       />
     </div>
   );

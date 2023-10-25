@@ -2,13 +2,14 @@ interface IUser{
     id?:string
     address: string;
     avatar: string;
-    createAt: string;
+    createAt: number;
     description: string;
     email: string;
     name: string;
     phone: string;
-    role: number;
+    role: string;
     zipcode: string;
+    country: string
 }
 
 interface IUserSign {

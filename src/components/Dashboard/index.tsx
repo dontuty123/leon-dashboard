@@ -11,9 +11,17 @@ interface IDashboard {
   curCols: ICols[];
   curRows: any;
   title: string;
+  preLink: string;
+  isAddBtn?: boolean;
 }
 
-export default function Dashboard({ curRows, curCols, title }: IDashboard) {
+export default function Dashboard({
+  curRows,
+  curCols,
+  title,
+  preLink,
+  isAddBtn,
+}: IDashboard) {
   const [pages, setPages] = useState<number>(0);
   const [rowInput, setRowInput] = useState<number>(6);
   const [curPage, setCurPage] = useState(1);
@@ -72,7 +80,20 @@ export default function Dashboard({ curRows, curCols, title }: IDashboard) {
     <div className="mb-16">
       <div className="relative overflow-auto w-full flex-nowrap dark:rounded-none rounded-md shadow-md bg-white dark:bg-gray-900 dark:text-white ">
         <div className="border-b p-4 flex justify-between items-center">
-          <span className="text-md font-semibold">{title}</span>
+          <div>
+            <span className="text-md font-semibold">{title}</span>
+            {isAddBtn ? (
+              <Link href="/">
+                <Button
+                  className="py-2 px-7  border-cyan-600 border cursor-pointer hover:bg-cyan-400 hover:text-white rounded-md ml-10 font-semibold text-md"
+                  contentButton="➕ Add product"
+                />
+              </Link>
+            ) : (
+              <></>
+            )}
+          </div>
+
           <div className="px-4 ">
             <span className="text-md font-semibold">Rows per page</span>
             <input
@@ -118,7 +139,7 @@ export default function Dashboard({ curRows, curCols, title }: IDashboard) {
                   {itemrow[itemcol.field]}
                 </div>
               ))}
-              <Link href={`/edituser/${itemrow.id}`}>
+              <Link href={`${preLink}/${itemrow.id}`}>
                 <Button
                   className="col-span-1 bg-transparent hover:bg-blue-500 dark:text-white text-blue-700 font-semibold hover:text-white px-4 border border-blue-500 hover:border-transparent rounded"
                   contentButton="Edit"
