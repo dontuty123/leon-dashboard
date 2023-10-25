@@ -33,7 +33,6 @@ const config: Config = {
 
   plugins: [
     require('flowbite/plugin'),
-    require("daisyui"),
     plugin(function ({ addComponents, theme }: any) {
       addComponents({
         ".container": {

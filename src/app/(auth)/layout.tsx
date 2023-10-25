@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import SideBar from "@/components/SideBar";
-import Navbar from "@/components/Navbar";
+import "@/app/globals.css";
 import Head from "next/head";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,22 +27,11 @@ export default function RootLayout({
       </Head>
 
       <body className={inter.className}>
-        <div className="flex text-black">
-          <div className="flex-1 shadow-lg">
-            <SideBar />
-          </div>
-          <div className="flex-5">
-            <div className="relative bg-gray-100">
-              <Navbar />
-              {/* Header */}
-              <Header />
-              <div className="px-14 mx-auto w-full -mt-20 min-h-[55vh]">
-                {children}
-              </div>
-              <Footer />
-            </div>
-          </div>
+        <div className="bg-gray-100">
+          {children}
+          <ToastContainer autoClose={1000} />
         </div>
+
         <script
           src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"
           async

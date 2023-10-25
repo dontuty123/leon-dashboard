@@ -1,0 +1,28 @@
+/**
+ * Keyframes animation
+ *
+ * @format
+ */
+
+@keyframes wave {
+  0% {
+    transform: rotate(400deg);
+  }
+  25% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-40deg);
+  }
+  100% {
+    transform: rotate(70deg);
+  }
+}
+
+/* Áp dụng animation cho class "waving" */
+.character.waving img {
+  animation: wave 4.5s infinite; /* 2s là thời gian mỗi chu kỳ, infinite để lặp vô hạn */
+}

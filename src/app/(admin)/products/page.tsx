@@ -187,7 +187,7 @@ const collumn: ICols[] = [
   },
 ];
 
-export default function page() {
+export default function Products() {
   return (
     <div>
       <Dashboard

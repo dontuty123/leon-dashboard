@@ -458,35 +458,9 @@ const mockData: IUser[] = [
     role: 0,
     zipcode: "123123",
   },
-  {
-    address: "03 Nailie, Aplobine, Melbourne",
-    avatar:
-      "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg",
-    createAt: "October 23, 2023 at 2:54:31 PM UTC+7",
-    description: "this is a test user",
-    email: "testemail@gmail.com",
-    name: "test name",
-    password: "123123",
-    phone: "0980091239",
-    role: 0,
-    zipcode: "123123",
-  },
-  {
-    address: "221 Nailie, New York, England",
-    avatar:
-      "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg",
-    createAt: "October 23, 2023 at 2:54:31 PM UTC+7",
-    description: "this is a test user",
-    email: "testemail@gmail.com",
-    name: "test name",
-    password: "123123",
-    phone: "0980091239",
-    role: 0,
-    zipcode: "123123",
-  },
 ];
 
-export default function page() {
+export default function Users() {
   const collumn: ICols[] = [
     {
       field: "email",
@@ -514,6 +488,7 @@ export default function page() {
       width: 120,
     },
   ];
+
   return (
     <div>
       <Dashboard curCols={collumn} curRows={mockData} title="User Dashboard" />

@@ -6,8 +6,13 @@ interface IUser{
     description: string;
     email: string;
     name: string;
-    password: string;
     phone: string;
     role: number;
     zipcode: string;
+}
+
+interface IUserSign {
+    email: string
+    password: string,
+    username?:string
 }
