@@ -8,6 +8,7 @@ import { saveProfileToLS } from "@/utils/auth";
 import { AppContext } from "@/context/app.context";
 import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import classNames from "classnames";
 
 const initialProfile = {
   address: "",
@@ -23,10 +24,10 @@ const initialProfile = {
 };
 
 export default function EditUserController() {
-  const { setProfile } = useContext(AppContext);
+  const { profile, setProfile } = useContext(AppContext);
   const [curProfile, setCurProfile] = useState<IUser>(initialProfile);
   const [file, setFile] = useState<File>();
-  const [disable, setDisable] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
   const previewImg = useMemo(() => {
     return file ? URL.createObjectURL(file) : "";
   }, [file]);
@@ -61,7 +62,9 @@ export default function EditUserController() {
       fileFromLocal &&
       (fileFromLocal.size >= 1048576 || !fileFromLocal.type.includes("image"))
     ) {
-      toast.error("File không đúng định dạng quy định");
+      toast.error(
+        "File không đúng định dạng quy định (Kích thước > 1mb hoặc không phải là ảnh"
+      );
     } else {
       setFile(fileFromLocal);
     }
@@ -72,7 +75,7 @@ export default function EditUserController() {
   };
 
   const handleSubmit = () => {
-    setDisable(true);
+    setDisabled(true);
     toast.dismiss();
     if (file) {
       const storagePath = "profile/" + file.name;
@@ -98,8 +101,12 @@ export default function EditUserController() {
             };
 
             update(refDB(db, "users/" + id), newProfile);
-            setProfile(newProfile);
-            saveProfileToLS(newProfile);
+
+            // nếu sửa thông tin của bản thân thì save lại trên local storage và app context
+            if (profile?.id == id) {
+              setProfile(newProfile);
+              saveProfileToLS(newProfile);
+            }
           });
         }
       );
@@ -107,13 +114,15 @@ export default function EditUserController() {
       toast.clearWaitingQueue();
     } else {
       update(refDB(db, "users/" + id), curProfile);
-      setProfile(curProfile);
-      saveProfileToLS(curProfile);
+      if (profile?.id == id) {
+        setProfile(curProfile);
+        saveProfileToLS(curProfile);
+      }
       toast.success("Sửa thông tin thành công");
       toast.clearWaitingQueue();
     }
     setTimeout(() => {
-      setDisable(false);
+      setDisabled(false);
     }, 1000);
   };
 
@@ -148,8 +157,14 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      value={curProfile?.name}
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
+                      value={curProfile?.name || ""}
                       name="name"
                       onChange={handleChangeInput}
                     />
@@ -163,8 +178,14 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="email"
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      value={curProfile?.email}
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
+                      value={curProfile?.email || ""}
                       name="email"
                       onChange={handleChangeInput}
                     />
@@ -227,9 +248,9 @@ export default function EditUserController() {
 
               <hr className="mt-6 border-b-1 border-gray-300" />
 
-              <h6 className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
+              <div className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                 Contact Information
-              </h6>
+              </div>
               <div className="flex flex-wrap">
                 <div className="w-full lg:w-12/12 px-4">
                   <div className="relative w-full mb-3">
@@ -241,8 +262,14 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      value={curProfile?.address}
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
+                      value={curProfile?.address || ""}
                       name="address"
                       onChange={handleChangeInput}
                     />
@@ -257,14 +284,20 @@ export default function EditUserController() {
                       Role
                     </label>
                     <select
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      name="country"
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer",
+                        {
+                          "!cursor-not-allowed": profile?.role != "owner",
+                        }
+                      )}
+                      name="role"
+                      disabled={profile?.role != "owner" ? true : false}
                       value={curProfile?.role}
                       onChange={handleChangeInput}
                     >
-                      <option value="Owner">Owner</option>
-                      <option value="Admin">Admin</option>
-                      <option value="User">User</option>
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                      <option value="owner">Owner</option>
                     </select>
                   </div>
                 </div>
@@ -278,8 +311,14 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      className=" px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 border-none"
-                      value={curProfile?.phone}
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
+                      value={curProfile?.phone || ""}
                       name="phone"
                       onChange={handleChangeInput}
                     />
@@ -295,8 +334,14 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      value={curProfile?.zipcode}
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
+                      value={curProfile?.zipcode || ""}
                       name="zipcode"
                       onChange={handleChangeInput}
                     />
@@ -319,9 +364,15 @@ export default function EditUserController() {
                       About me
                     </label>
                     <textarea
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
+                      disabled={profile?.role == "user" ? true : false}
+                      className={classNames(
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
                       rows={4}
-                      value={curProfile?.description}
+                      value={curProfile?.description || ""}
                       name="description"
                       onChange={handleChangeInput}
                     ></textarea>
@@ -332,9 +383,15 @@ export default function EditUserController() {
                     Edit curProfile
                   </span>
                   <Button
-                    className="bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md"
+                    className={classNames(
+                      "bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md",
+                      {
+                        "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
+                          disabled,
+                      }
+                    )}
                     contentButton="Submit"
-                    disabled={disable}
+                    disabled={disabled}
                     onClick={handleSubmit}
                   />
                 </div>

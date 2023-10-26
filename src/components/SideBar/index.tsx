@@ -3,7 +3,7 @@ import React from "react";
 
 export default function SideBar() {
   return (
-    <div className="bg-white min-h-screen border-r fixed left-0 top-0 bottom-0 w-full">
+    <div className=" bg-white min-h-screen border-r fixed left-0 top-0 bottom-0 w-full">
       <div className="py-7 px-4 text-xl font-semibold text-gray-500 border-b cursor-pointer">
         <Link href="/">Leon Dashboard</Link>
       </div>

@@ -2,10 +2,12 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@/components/Button";
 import { ICols } from "@/types/static.type";
 import Pagination from "../Pagination";
+import { AppContext } from "@/context/app.context";
+import classNames from "classnames";
 
 interface IDashboard {
   curCols: ICols[];
@@ -24,11 +26,12 @@ export default function Dashboard({
   addLink,
   isAddBtn,
 }: IDashboard) {
+  const { profile } = useContext(AppContext);
+
   const [pages, setPages] = useState<number>(0);
   const [rowInput, setRowInput] = useState<number>(6);
   const [curPage, setCurPage] = useState(1);
   const [curUsers, setCurUsers] = useState<IUser[]>();
-  // const dispatch = useDispatch<AppDispatch>();
 
   //dựa trên số row của 1 page, chia lấy số pages và danh sách các user của trang thứ nhất.
   useEffect(() => {
@@ -148,7 +151,14 @@ export default function Dashboard({
                 />
               </Link>
               <Button
-                className="col-span-1 bg-transparent hover:bg-rose-500 dark:text-white text-rose-700 font-semibold hover:text-white px-4 border border-rose-500 hover:border-transparent rounded"
+                disabled={profile?.role == "user" ? true : false}
+                className={classNames(
+                  "col-span-1 bg-transparent hover:bg-rose-500 dark:text-white text-rose-700 font-semibold hover:text-white px-4 border border-rose-500 hover:border-transparent rounded",
+                  {
+                    "!cursor-not-allowed !bg-gray-300 !text-white !hover:bg-gray-300 !border-gray-500":
+                      profile?.role == "user",
+                  }
+                )}
                 onClick={() => handleDeleteUser(itemrow?.id)}
                 contentButton="Delete"
               />

@@ -33,7 +33,10 @@ export default function Dropdown({ profile, setProfile }: IDropdown) {
             <span className="sr-only">Open user menu</span>
             <img
               className="w-8 h-8 mr-2 rounded-full"
-              src={curProfile?.avatar}
+              src={
+                curProfile?.avatar ||
+                "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
+              }
               alt={curProfile?.name}
             />
             {curProfile?.name}
