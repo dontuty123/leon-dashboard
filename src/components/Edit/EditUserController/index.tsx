@@ -1,30 +1,41 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Button from "@/components/Button";
 import { useParams } from "next/navigation";
-import { onValue, ref, update } from "firebase/database";
-import { db } from "server/firebase";
+import { onValue, update, ref as refDB } from "firebase/database";
+import { db, storageDB } from "server/firebase";
 import { saveProfileToLS } from "@/utils/auth";
 import { AppContext } from "@/context/app.context";
+import { toast } from "react-toastify";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-export default function EditController() {
+const initialProfile = {
+  address: "",
+  avatar: "",
+  country: "",
+  createAt: 0,
+  description: "",
+  email: "",
+  name: "",
+  phone: "",
+  role: "user",
+  zipcode: "",
+};
+
+export default function EditUserController() {
   const { setProfile } = useContext(AppContext);
-  const [curProfile, setCurProfile] = useState<IUser>({
-    address: "",
-    avatar: "",
-    country: "",
-    createAt: 0,
-    description: "",
-    email: "",
-    name: "",
-    phone: "",
-    role: "user",
-    zipcode: "",
-  });
+  const [curProfile, setCurProfile] = useState<IUser>(initialProfile);
+  const [file, setFile] = useState<File>();
+  const [disable, setDisable] = useState<boolean>(false);
+  const previewImg = useMemo(() => {
+    return file ? URL.createObjectURL(file) : "";
+  }, [file]);
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const { id } = useParams();
 
   useEffect(() => {
-    const getcurProfile = ref(db, "users/" + id);
+    const getcurProfile = refDB(db, "users/" + id);
     onValue(getcurProfile, (snapshot) => {
       const data = snapshot.val();
       setCurProfile(data);
@@ -35,17 +46,75 @@ export default function EditController() {
     target,
   }:
     | React.ChangeEvent<HTMLInputElement>
-    | React.ChangeEvent<HTMLTextAreaElement>) => {
+    | React.ChangeEvent<HTMLTextAreaElement>
+    | React.ChangeEvent<HTMLSelectElement>) => {
     setCurProfile({
       ...curProfile,
       [target.name]: target.value,
     });
   };
 
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileFromLocal = event.target.files?.[0];
+    //1MB = 1048576 B
+    if (
+      fileFromLocal &&
+      (fileFromLocal.size >= 1048576 || !fileFromLocal.type.includes("image"))
+    ) {
+      toast.error("File không đúng định dạng quy định");
+    } else {
+      setFile(fileFromLocal);
+    }
+  };
+
+  const handleInputFile = () => {
+    inputFileRef.current?.click();
+  };
+
   const handleSubmit = () => {
-    update(ref(db, "users/" + id), curProfile);
-    setProfile(curProfile);
-    saveProfileToLS(curProfile);
+    setDisable(true);
+    toast.dismiss();
+    if (file) {
+      const storagePath = "profile/" + file.name;
+      const storageRef = ref(storageDB, storagePath);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+
+            const newProfile = {
+              ...curProfile,
+              avatar: downloadURL,
+            };
+
+            update(refDB(db, "users/" + id), newProfile);
+            setProfile(newProfile);
+            saveProfileToLS(newProfile);
+          });
+        }
+      );
+      toast.success("Sửa thông tin thành công");
+      toast.clearWaitingQueue();
+    } else {
+      update(refDB(db, "users/" + id), curProfile);
+      setProfile(curProfile);
+      saveProfileToLS(curProfile);
+      toast.success("Sửa thông tin thành công");
+      toast.clearWaitingQueue();
+    }
+    setTimeout(() => {
+      setDisable(false);
+    }, 1000);
   };
 
   return (
@@ -106,10 +175,29 @@ export default function EditController() {
                   <div className="relative">
                     <img
                       className=" w-40 h-40 rounded-full shadow-lg"
-                      src="https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
+                      src={
+                        previewImg
+                          ? previewImg ||
+                            "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
+                          : curProfile?.avatar ||
+                            "https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
+                      }
                       alt="Rounded avatar"
                     />
-                    <div className="absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer">
+                    <input
+                      className="hidden"
+                      type="file"
+                      accept=".jpg,.jpeg,.png"
+                      ref={inputFileRef}
+                      onChange={onFileChange}
+                      onClick={(event) => {
+                        (event.target as any).value = null;
+                      }}
+                    />
+                    <div
+                      className="absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer"
+                      onClick={handleInputFile}
+                    >
                       <svg
                         className="w-5 h-5 mx-2 my-2 dark:text-white"
                         aria-hidden="true"
@@ -166,15 +254,18 @@ export default function EditController() {
                       className="block uppercase text-gray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Country
+                      Role
                     </label>
-                    <input
-                      type="text"
+                    <select
                       className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                      value={curProfile?.country}
                       name="country"
+                      value={curProfile?.role}
                       onChange={handleChangeInput}
-                    />
+                    >
+                      <option value="Owner">Owner</option>
+                      <option value="Admin">Admin</option>
+                      <option value="User">User</option>
+                    </select>
                   </div>
                 </div>
                 <div className="w-full lg:w-4/12 px-4">
@@ -243,6 +334,7 @@ export default function EditController() {
                   <Button
                     className="bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md"
                     contentButton="Submit"
+                    disabled={disable}
                     onClick={handleSubmit}
                   />
                 </div>

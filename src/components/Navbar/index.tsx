@@ -1,8 +1,12 @@
-import React from "react";
+"use client"
+import React, { useContext } from "react";
 import Link from "next/link";
 import Dropdown from "../Dropdown";
+import { AppContext } from "@/context/app.context";
 
 export default function Navbar() {
+  const { profile, setProfile } = useContext(AppContext);
+
   return (
     <div>
       <nav className="absolute top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4">
@@ -14,7 +18,7 @@ export default function Navbar() {
             Dashboard
           </Link>
           <div className="flex-col md:flex-row list-none items-center hidden md:flex">
-            <Dropdown />
+            <Dropdown profile={profile} setProfile={setProfile } />
           </div>
         </div>
       </nav>

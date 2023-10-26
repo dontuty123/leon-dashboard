@@ -1,21 +1,28 @@
 "use client";
-import { AppContext } from "@/context/app.context";
 import { clearProfileFromLS } from "@/utils/auth";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Dropdown() {
-  const { profile, setProfile } = useContext(AppContext);
+interface IDropdown {
+  profile: IUser | null;
+  setProfile: React.Dispatch<React.SetStateAction<IUser | null>>;
+}
 
+export default function Dropdown({ profile, setProfile }: IDropdown) {
+  const [curProfile, setCurProfile] = useState<IUser | null>();
+
+  useEffect(() => {
+    setCurProfile(profile);
+  }, [profile]);
   const handleSignOut = () => {
     setProfile(null);
+    setCurProfile(null);
     clearProfileFromLS();
   };
 
-
   return (
     <div>
-      {profile ? (
+      {curProfile ? (
         <div>
           <button
             id="dropdownAvatarNameButton"
@@ -26,10 +33,10 @@ export default function Dropdown() {
             <span className="sr-only">Open user menu</span>
             <img
               className="w-8 h-8 mr-2 rounded-full"
-              src={profile?.avatar}
-              alt={profile?.name}
+              src={curProfile?.avatar}
+              alt={curProfile?.name}
             />
-            {profile?.name}
+            {curProfile?.name}
             <svg
               className="w-2.5 h-2.5 ml-2.5"
               aria-hidden="true"
@@ -51,8 +58,8 @@ export default function Dropdown() {
             className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
           >
             <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-              <div className="font-medium ">{profile?.name}</div>
-              <div className="truncate">{profile?.email}</div>
+              <div className="font-medium ">{curProfile?.name}</div>
+              <div className="truncate">{curProfile?.email}</div>
             </div>
             <ul
               className="py-2 text-sm text-gray-700 dark:text-gray-200"
@@ -68,7 +75,7 @@ export default function Dropdown() {
               </li>
               <li>
                 <Link
-                  href={`/users/edit/` + profile?.id}
+                  href={`/users/edit/` + curProfile?.id}
                   className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Edit profile
