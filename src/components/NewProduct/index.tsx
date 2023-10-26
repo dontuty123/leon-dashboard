@@ -92,6 +92,7 @@ export default function AddProduct() {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               console.log("File available at", downloadURL);
               const newProduct: IProduct = {
+                id: fileName,
                 category: product.category,
                 createAt: getUniqeTime,
                 description: product.description,

@@ -132,7 +132,9 @@ export default function EditUserController() {
         <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
           <div className="rounded-t bg-white mb-0 px-6 py-6 border-b-2">
             <div className="text-center flex justify-between">
-              <h6 className="text-gray-700 text-xl font-bold">My account</h6>
+              <h6 className="text-gray-700 text-xl font-bold">
+                {curProfile?.name}&apos;s account
+              </h6>
               <button
                 className="bg-gray-700 transition-all active:bg-gray-600 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear duration-150"
                 type="button"
@@ -157,11 +159,17 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.name || ""}
@@ -178,11 +186,17 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="email"
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.email || ""}
@@ -262,11 +276,17 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.address || ""}
@@ -311,11 +331,17 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.phone || ""}
@@ -334,11 +360,17 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="text"
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.zipcode || ""}
@@ -364,11 +396,17 @@ export default function EditUserController() {
                       About me
                     </label>
                     <textarea
-                      disabled={profile?.role == "user" ? true : false}
+                      disabled={
+                        profile?.role == "admin" ||
+                        profile?.role == "owner" ||
+                        profile?.id == id
+                          ? false
+                          : true
+                      }
                       className={classNames(
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user",
+                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       rows={4}

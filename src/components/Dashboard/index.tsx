@@ -16,6 +16,7 @@ interface IDashboard {
   preLink: string;
   addLink?: string;
   isAddBtn?: boolean;
+  handleDelete?: (id: string) => void;
 }
 
 export default function Dashboard({
@@ -25,6 +26,7 @@ export default function Dashboard({
   preLink,
   addLink,
   isAddBtn,
+  handleDelete,
 }: IDashboard) {
   const { profile } = useContext(AppContext);
 
@@ -66,10 +68,6 @@ export default function Dashboard({
     }
   };
 
-  const handleDeleteUser = (id: string | undefined) => {
-    // dispatch(deleteUser(id));
-  };
-
   //Loại bỏ kí tự khác số
   const restrictToNumbers = (event: ChangeEvent<HTMLInputElement>) => {
     event.target.value = event.target.value.replace(/[^0-9]/g, "");
@@ -83,7 +81,7 @@ export default function Dashboard({
 
   return (
     <div className="mb-16">
-      <div className="relative overflow-auto w-full flex-nowrap dark:rounded-none rounded-md shadow-md bg-white dark:bg-gray-900 dark:text-white ">
+      <div className="relative overflow-auto w-full dark:rounded-none rounded-md shadow-md bg-white dark:bg-gray-900 dark:text-white ">
         <div className="border-b p-4 flex justify-between items-center">
           <div>
             <span className="text-md font-semibold">{title}</span>
@@ -111,60 +109,64 @@ export default function Dashboard({
             />
           </div>
         </div>
-        <div className="p-4 border-b w-full">
-          <div className="flex gap-4 text-left flex-nowrap">
-            {curCols?.map((item, index) => (
-              <div
-                className="font-semibold hover:border-x-2"
-                key={index}
-                style={item.width ? { width: item.width } : { width: "200px" }}
-              >
-                {item.headerName}
-              </div>
-            ))}
-            <div className="font-semibold hover:border-x-2 w-48">Action</div>
-          </div>
-        </div>
-        {curUsers?.map((itemrow, index) => (
-          <div
-            className="p-4 border-b gap-4 w-full hover:bg-gray-200/40 overflow-auto "
-            key={index}
-          >
-            <div className="flex gap-4 text-left flex-nowrap">
-              {curCols?.map((itemcol, index) => (
+        <div className="flex flex-wrap items-center">
+          <div className="p-4 border-b w-full ">
+            <div className="flex gap-4 text-left">
+              {curCols?.map((item, index) => (
                 <div
-                  className="font-normal truncate"
+                  className="font-semibold hover:border-x-2"
                   key={index}
                   style={
-                    itemcol.width
-                      ? { width: itemcol.width }
-                      : { width: "200px" }
+                    item.width ? { width: item.width } : { width: "200px" }
                   }
                 >
-                  {itemrow[itemcol.field]}
+                  {item.headerName}
                 </div>
               ))}
-              <Link href={`${preLink}/${itemrow.id}`}>
-                <Button
-                  className="col-span-1 bg-transparent hover:bg-blue-500 dark:text-white text-blue-700 font-semibold hover:text-white px-4 border border-blue-500 hover:border-transparent rounded"
-                  contentButton="Edit"
-                />
-              </Link>
-              <Button
-                disabled={profile?.role == "user" ? true : false}
-                className={classNames(
-                  "col-span-1 bg-transparent hover:bg-rose-500 dark:text-white text-rose-700 font-semibold hover:text-white px-4 border border-rose-500 hover:border-transparent rounded",
-                  {
-                    "!cursor-not-allowed !bg-gray-300 !text-white !hover:bg-gray-300 !border-gray-500":
-                      profile?.role == "user",
-                  }
-                )}
-                onClick={() => handleDeleteUser(itemrow?.id)}
-                contentButton="Delete"
-              />
+              <div className="font-semibold hover:border-x-2 w-48">Action</div>
             </div>
           </div>
-        ))}
+          {curUsers?.map((itemrow, index) => (
+            <div
+              className="p-4 border-b gap-4 w-full hover:bg-gray-200/40 overflow-auto "
+              key={index}
+            >
+              <div className="flex gap-4 text-left flex-nowrap">
+                {curCols?.map((itemcol, index) => (
+                  <div
+                    className="font-normal truncate"
+                    key={index}
+                    style={
+                      itemcol.width
+                        ? { width: itemcol.width }
+                        : { width: "200px" }
+                    }
+                  >
+                    {itemrow[itemcol.field]}
+                  </div>
+                ))}
+                <Link href={`${preLink}/${itemrow.id}`}>
+                  <Button
+                    className="col-span-1 bg-transparent hover:bg-blue-500 dark:text-white text-blue-700 font-semibold hover:text-white px-4 border border-blue-500 hover:border-transparent rounded"
+                    contentButton="Edit"
+                  />
+                </Link>
+                <Button
+                  disabled={profile?.role == "user" ? true : false}
+                  className={classNames(
+                    "col-span-1 bg-transparent hover:bg-rose-500 dark:text-white text-rose-700 font-semibold hover:text-white px-4 border border-rose-500 hover:border-transparent rounded",
+                    {
+                      "!cursor-not-allowed !bg-gray-300 !text-white !hover:bg-gray-300 !border-gray-500":
+                        profile?.role == "user",
+                    }
+                  )}
+                  onClick={() => handleDelete(itemrow?.id)}
+                  contentButton="Delete"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="flex items-center justify-center mt-5">
         <Pagination
