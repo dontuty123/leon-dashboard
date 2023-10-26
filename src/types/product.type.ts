@@ -7,4 +7,5 @@ export interface IProduct {
     description: string;
     category: string;
     id?: string;
+    createAt: number
 }

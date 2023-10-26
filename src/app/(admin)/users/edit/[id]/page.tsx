@@ -1,4 +1,4 @@
-import EditController from "@/components/EditController";
+import EditController from "@/components/Edit/EditUser";
 import React from "react";
 
 export default function EditUser() {

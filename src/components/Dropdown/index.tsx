@@ -12,7 +12,6 @@ export default function Dropdown() {
     clearProfileFromLS();
   };
 
-  console.log(profile);
 
   return (
     <div>

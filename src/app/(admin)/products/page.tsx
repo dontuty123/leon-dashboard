@@ -5,6 +5,7 @@ import React from "react";
 
 const mockData: IProduct[] = [
   {
+    createAt: 10000,
     name: "Fantastic Steel Shirt",
     image: "https://loremflickr.com/640/480/fashion",
     price: "464.00",
@@ -15,6 +16,7 @@ const mockData: IProduct[] = [
     id: "1",
   },
   {
+    createAt: 10000,
     name: "Rustic Plastic Computer",
     image: "https://loremflickr.com/640/480/fashion",
     price: "967.00",
@@ -26,6 +28,7 @@ const mockData: IProduct[] = [
     id: "2",
   },
   {
+    createAt: 10000,
     name: "Small Fresh Pizza",
     image: "https://loremflickr.com/640/480/fashion",
     price: "939.00",
@@ -37,6 +40,7 @@ const mockData: IProduct[] = [
     id: "3",
   },
   {
+    createAt: 10000,
     name: "Refined Wooden Table",
     image: "https://loremflickr.com/640/480/fashion",
     price: "714.00",
@@ -48,6 +52,7 @@ const mockData: IProduct[] = [
     id: "4",
   },
   {
+    createAt: 10000,
     name: "Elegant Concrete Table",
     image: "https://loremflickr.com/640/480/fashion",
     price: "859.00",
@@ -59,6 +64,7 @@ const mockData: IProduct[] = [
     id: "5",
   },
   {
+    createAt: 10000,
     name: "Sleek Plastic Shoes",
     image: "https://loremflickr.com/640/480/fashion",
     price: "92.00",
@@ -70,6 +76,7 @@ const mockData: IProduct[] = [
     id: "6",
   },
   {
+    createAt: 10000,
     name: "Elegant Frozen Salad",
     image: "https://loremflickr.com/640/480/fashion",
     price: "942.00",
@@ -81,6 +88,7 @@ const mockData: IProduct[] = [
     id: "7",
   },
   {
+    createAt: 10000,
     name: "Rustic Plastic Chips",
     image: "https://loremflickr.com/640/480/fashion",
     price: "897.00",
@@ -92,6 +100,7 @@ const mockData: IProduct[] = [
     id: "8",
   },
   {
+    createAt: 10000,
     name: "Electronic Rubber Fish",
     image: "https://loremflickr.com/640/480/fashion",
     price: "207.00",
@@ -103,6 +112,7 @@ const mockData: IProduct[] = [
     id: "9",
   },
   {
+    createAt: 10000,
     name: "Electronic Steel Soap",
     image: "https://loremflickr.com/640/480/fashion",
     price: "472.00",
@@ -114,6 +124,7 @@ const mockData: IProduct[] = [
     id: "10",
   },
   {
+    createAt: 10000,
     name: "Small Steel Bike",
     image: "https://loremflickr.com/640/480/fashion",
     price: "780.00",
@@ -125,6 +136,7 @@ const mockData: IProduct[] = [
     id: "11",
   },
   {
+    createAt: 10000,
     name: "Recycled Plastic Bike",
     image: "https://loremflickr.com/640/480/fashion",
     price: "413.00",
@@ -136,6 +148,7 @@ const mockData: IProduct[] = [
     id: "12",
   },
   {
+    createAt: 10000,
     name: "Modern Frozen Towels",
     image: "https://loremflickr.com/640/480/fashion",
     price: "288.00",
@@ -147,6 +160,7 @@ const mockData: IProduct[] = [
     id: "13",
   },
   {
+    createAt: 10000,
     name: "Unbranded Bronze Sausages",
     image: "https://loremflickr.com/640/480/fashion",
     price: "983.00",
@@ -162,26 +176,31 @@ const mockData: IProduct[] = [
 const collumn: ICols[] = [
   {
     field: "name",
+
     headerName: "Product's name",
     width: 300,
   },
   {
     field: "category",
+
     headerName: "Category",
     width: 150,
   },
   {
     field: "price",
+
     headerName: "Price",
     width: 120,
   },
   {
     field: "quantity",
+
     headerName: "In Stock",
     width: 150,
   },
   {
     field: "sold",
+
     headerName: "Sold",
     width: 120,
   },
@@ -196,6 +215,7 @@ export default function Products() {
         title="Product Dashboard"
         preLink="products/edit"
         isAddBtn={true}
+        addLink={`products/add`}
       />
     </div>
   );

@@ -38,7 +38,6 @@ export default function Login() {
         const dbRef = ref(db);
         get(child(dbRef, `users/${user.uid}`))
           .then((snapshot) => {
-            console.log(snapshot);
             if (snapshot.exists()) {
               saveProfileToLS(snapshot.val());
               toast.success("Đăng nhập thành công");

@@ -109,9 +109,9 @@ export default function EditController() {
                       src="https://img.freepik.com/premium-vector/woman-gesturing-hello-with-waving-hand-avatar-illustration_619097-311.jpg"
                       alt="Rounded avatar"
                     />
-                    <div className="absolute h-15 w-15 bottom-1 right-1 bg-slate-500 hover:bg-slate-400 rounded-lg text-white cursor-pointer">
+                    <div className="absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer">
                       <svg
-                        className="w-6 h-6 mx-2 my-1 dark:text-white"
+                        className="w-5 h-5 mx-2 my-2 dark:text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

@@ -12,6 +12,7 @@ interface IDashboard {
   curRows: any;
   title: string;
   preLink: string;
+  addLink?: string;
   isAddBtn?: boolean;
 }
 
@@ -20,6 +21,7 @@ export default function Dashboard({
   curCols,
   title,
   preLink,
+  addLink,
   isAddBtn,
 }: IDashboard) {
   const [pages, setPages] = useState<number>(0);
@@ -83,9 +85,9 @@ export default function Dashboard({
           <div>
             <span className="text-md font-semibold">{title}</span>
             {isAddBtn ? (
-              <Link href="/">
+              <Link href={addLink}>
                 <Button
-                  className="py-2 px-7  border-cyan-600 border cursor-pointer hover:bg-cyan-400 hover:text-white rounded-md ml-10 font-semibold text-md"
+                  className="py-2 px-7  border-cyan-900 border cursor-pointer hover:bg-blue-300 hover:text-white rounded-md ml-10 font-semibold text-md"
                   contentButton="➕ Add product"
                 />
               </Link>
