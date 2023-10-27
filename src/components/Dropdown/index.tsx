@@ -1,7 +1,8 @@
 "use client";
-import { clearProfileFromLS } from "@/utils/auth";
+import classNames from "classnames";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
 interface IDropdown {
   profile: IUser | null;
@@ -10,24 +11,32 @@ interface IDropdown {
 
 export default function Dropdown({ profile, setProfile }: IDropdown) {
   const [curProfile, setCurProfile] = useState<IUser | null>();
+  const [hiddenToggle, setHiddenToggle] = useState<boolean>(false);
+
+  const [cookies, _, removeCookie] = useCookies();
 
   useEffect(() => {
-    setCurProfile(profile);
-  }, [profile]);
+    setCurProfile(cookies.user);
+  }, [cookies.user]);
   const handleSignOut = () => {
     setProfile(null);
     setCurProfile(null);
-    clearProfileFromLS();
+    removeCookie("user");
+  };
+
+  const hanldehiddenToggle = () => {
+    setHiddenToggle(!hiddenToggle);
   };
 
   return (
     <div>
       {curProfile ? (
-        <div>
+        <div
+          onMouseEnter={hanldehiddenToggle}
+          onMouseLeave={hanldehiddenToggle}
+        >
           <button
-            id="dropdownAvatarNameButton"
-            data-dropdown-toggle="dropdownAvatarName"
-            className="flex items-center text-sm font-medium text-white  rounded-full hover:text-blue-400 hover:ring-1 hover:ring-gray-100 dark:hover:text-gray-500 md:mr-0 focus:ring-1 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white p-2"
+            className="flex items-center text-sm font-medium text-white w-44  rounded-full hover:text-blue-400 hover:ring-1 hover:ring-gray-100 dark:hover:text-gray-500 md:mr-0 focus:ring-1 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white p-2 truncate"
             type="button"
           >
             <span className="sr-only">Open user menu</span>
@@ -42,7 +51,6 @@ export default function Dropdown({ profile, setProfile }: IDropdown) {
             {curProfile?.name}
             <svg
               className="w-2.5 h-2.5 ml-2.5"
-              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 10 6"
@@ -56,18 +64,20 @@ export default function Dropdown({ profile, setProfile }: IDropdown) {
               />
             </svg>
           </button>
+
           <div
-            id="dropdownAvatarName"
-            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+            className={classNames(
+              "z-10 mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600",
+              {
+                hidden: hiddenToggle == false,
+              }
+            )}
           >
             <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
               <div className="font-medium ">{curProfile?.name}</div>
               <div className="truncate">{curProfile?.email}</div>
             </div>
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownInformdropdownAvatarNameButtonationButton"
-            >
+            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
               <li>
                 <Link
                   href="/"
@@ -79,7 +89,7 @@ export default function Dropdown({ profile, setProfile }: IDropdown) {
               <li>
                 <Link
                   href={`/users/edit/` + curProfile?.id}
-                  className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="block px-4 py-2 hover:bg-gray-200  dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Edit profile
                 </Link>

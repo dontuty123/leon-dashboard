@@ -1,17 +1,18 @@
 "use client";
 import Button from "@/components/Button";
-import { saveProfileToLS } from "@/utils/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { child, get, ref } from "firebase/database";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 import { auth, db } from "server/firebase";
 import alo from "src/assets/images/zyro-image.png";
 import "src/assets/login.css";
 
 export default function Login() {
+  const [_, setCookie] = useCookies();
   const [loginUser, setLoginUser] = useState<IUserSign>({
     email: "",
     password: "",
@@ -39,7 +40,7 @@ export default function Login() {
         get(child(dbRef, `users/${user.uid}`))
           .then((snapshot) => {
             if (snapshot.exists()) {
-              saveProfileToLS(snapshot.val());
+              setCookie("user", snapshot.val());
               toast.success("Đăng nhập thành công");
               router.push("/");
             } else {

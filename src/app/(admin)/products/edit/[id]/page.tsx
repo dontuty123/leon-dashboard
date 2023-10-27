@@ -1,7 +1,10 @@
-import React from 'react'
+import EditProductController from "@/components/Edit/EditProductController";
+import React from "react";
 
 export default function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <EditProductController />
+    </div>
+  );
 }

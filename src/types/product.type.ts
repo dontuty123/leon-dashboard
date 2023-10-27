@@ -1,4 +1,4 @@
-export interface IProduct {
+ interface IProduct {
     name: string;
     image: string;
     price: number;
@@ -8,4 +8,12 @@ export interface IProduct {
     category: string;
     id?: string;
     createAt: number
+}
+
+interface ITransaction {
+    id?: string
+    userID:string
+    quantity: number
+    createAt: number
+    product: IProduct
 }

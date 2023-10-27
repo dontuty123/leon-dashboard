@@ -1,6 +1,6 @@
 "use client";
-import { getProfileFromLS } from "@/utils/auth";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
 interface IAppcontext {
   setProfile: React.Dispatch<React.SetStateAction<IUser | null>>;
@@ -9,15 +9,21 @@ interface IAppcontext {
 
 const initialAppContext: IAppcontext = {
   setProfile: () => null,
-  profile: getProfileFromLS(),
+  profile: null,
 };
 
 export const AppContext = createContext<IAppcontext>(initialAppContext);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const [cookies] = useCookies();
+
   const [profile, setProfile] = useState<IUser | null>(
     initialAppContext.profile
   );
+
+  useEffect(() => {
+    setProfile(cookies.user);
+  }, [cookies.user]);
 
   return (
     <AppContext.Provider

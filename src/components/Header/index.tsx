@@ -1,8 +1,52 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CardStats from "../Card/CardStats";
+import { onValue, ref } from "firebase/database";
+import { db } from "server/firebase";
+import {
+  compareCalculate,
+  ratioCalculate,
+  ratioRevanueCalculate,
+  revanueCalculate,
+} from "@/utils/calculate";
+
+interface ICard {
+  statTitleProduct: number;
+  statTitleUser: number;
+  statTitleSale: number;
+  statTitleTotalAmount: number;
+}
 
 export default function Header() {
+  const [quantity, setQuantity] = useState<ICard | null>();
+  const [percent, setPercent] = useState<ICard | null>();
+  const [products, setProducts] = useState<IProduct[] | null>();
+  const [transaction, setTransaction] = useState<ITransaction[] | null>();
+  const [users, setUsers] = useState<IUser[] | null>();
+
+  useEffect(() => {
+    const userListRef = ref(db, "users");
+    onValue(userListRef, (snapshot) => {
+      const val = snapshot.val();
+      const data: IUser[] = Object.values(val);
+      setUsers(data);
+    });
+
+    const productListRef = ref(db, "products");
+    onValue(productListRef, (snapshot) => {
+      const val = snapshot.val();
+      const data: IProduct[] = Object.values(val);
+      setProducts(data);
+    });
+    const transactionsRef = ref(db, "transaction");
+    onValue(transactionsRef, (snapshot) => {
+      const val = snapshot.val();
+      const data: ITransaction[] = Object.values(val);
+      setTransaction(data);
+    });
+  }, []);
+
+
   return (
     <>
       <div className="relative bg-cyan-900 md:pt-32 pb-32 pt-12">
@@ -11,12 +55,20 @@ export default function Header() {
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="TRAFFIC"
-                  statTitle="350,897"
-                  statArrow="up"
-                  statPercent="3.48"
-                  statPercentColor="text-green-500"
-                  statDescripiron="Since last month"
+                  statSubtitle="NEW PRODUCT"
+                  statTitle={compareCalculate(products as IProduct[])}
+                  statPercent={ratioCalculate(products as IProduct[])}
+                  statArrow={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "up"
+                      : "down"
+                  }
+                  statPercentColor={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }
+                  statDescripiron="Since last week"
                   statIconName={
                     <svg
                       className="w-6 h-6 text-white"
@@ -34,10 +86,18 @@ export default function Header() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="NEW USERS"
-                  statTitle="2,356"
-                  statArrow="down"
-                  statPercent="3.48"
-                  statPercentColor="text-red-500"
+                  statTitle={compareCalculate(users as IUser[])}
+                  statArrow={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "up"
+                      : "down"
+                  }
+                  statPercent={ratioCalculate(users as IUser[])}
+                  statPercentColor={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }
                   statDescripiron="Since last week"
                   statIconName={
                     <svg
@@ -57,11 +117,19 @@ export default function Header() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="SALES"
-                  statTitle="924"
-                  statArrow="down"
-                  statPercent="1.10"
-                  statPercentColor="text-orange-500"
-                  statDescripiron="Since yesterday"
+                  statTitle={compareCalculate(transaction as ITransaction[])}
+                  statArrow={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "up"
+                      : "down"
+                  }
+                  statPercent={ratioCalculate(transaction as ITransaction[])}
+                  statPercentColor={
+                    Number(ratioCalculate(products as IProduct[])) > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }
+                  statDescripiron="Since last week"
                   statIconName={
                     <svg
                       className="w-6 h-6 text-white"
@@ -79,12 +147,20 @@ export default function Header() {
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="PERFORMANCE"
-                  statTitle="49,65%"
-                  statArrow="up"
-                  statPercent="12"
+                  statSubtitle="TOTAL REVANUE"
+                  statTitle={revanueCalculate(transaction as ITransaction[])}
+                  statArrow={
+                    Number(
+                      ratioRevanueCalculate(transaction as ITransaction[])
+                    ) > 0
+                      ? "up"
+                      : "down"
+                  }
+                  statPercent={ratioRevanueCalculate(
+                    transaction as ITransaction[]
+                  )}
                   statPercentColor="text-blue-500"
-                  statDescripiron="Since last month"
+                  statDescripiron="Since last week"
                   statIconName={
                     <svg
                       className="w-6 h-6 text-white"

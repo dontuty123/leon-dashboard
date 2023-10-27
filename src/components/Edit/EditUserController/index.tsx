@@ -3,12 +3,13 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Button from "@/components/Button";
 import { useParams } from "next/navigation";
 import { onValue, update, ref as refDB } from "firebase/database";
-import { db, storageDB } from "server/firebase";
-import { saveProfileToLS } from "@/utils/auth";
+import { auth, db, storageDB } from "server/firebase";
 import { AppContext } from "@/context/app.context";
 import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import classNames from "classnames";
+import { useCookies } from "react-cookie";
+import { User, updateEmail, updateProfile } from "firebase/auth";
 
 const initialProfile = {
   address: "",
@@ -25,6 +26,7 @@ const initialProfile = {
 
 export default function EditUserController() {
   const { profile, setProfile } = useContext(AppContext);
+  const [_, setCookie] = useCookies();
   const [curProfile, setCurProfile] = useState<IUser>(initialProfile);
   const [file, setFile] = useState<File>();
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -76,6 +78,9 @@ export default function EditUserController() {
 
   const handleSubmit = () => {
     setDisabled(true);
+    setTimeout(() => {
+      setDisabled(false);
+    }, 1000);
     toast.dismiss();
     if (file) {
       const storagePath = "profile/" + file.name;
@@ -99,13 +104,19 @@ export default function EditUserController() {
               ...curProfile,
               avatar: downloadURL,
             };
-
             update(refDB(db, "users/" + id), newProfile);
 
             // nếu sửa thông tin của bản thân thì save lại trên local storage và app context
             if (profile?.id == id) {
-              setProfile(newProfile);
-              saveProfileToLS(newProfile);
+              updateEmail(auth.currentUser as User, newProfile.email)
+                .then(() => {
+                  console.log("success");
+                  setProfile(newProfile);
+                  setCookie("user", newProfile);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             }
           });
         }
@@ -115,15 +126,18 @@ export default function EditUserController() {
     } else {
       update(refDB(db, "users/" + id), curProfile);
       if (profile?.id == id) {
-        setProfile(curProfile);
-        saveProfileToLS(curProfile);
+        updateEmail(auth.currentUser as User, curProfile?.email)
+          .then(() => {
+            setProfile(curProfile);
+            setCookie("user", curProfile);
+          })
+          .catch((error) => {
+            toast.warning(error);
+          });
       }
       toast.success("Sửa thông tin thành công");
       toast.clearWaitingQueue();
     }
-    setTimeout(() => {
-      setDisabled(false);
-    }, 1000);
   };
 
   return (
@@ -167,9 +181,10 @@ export default function EditUserController() {
                           : true
                       }
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.name || ""}
@@ -186,17 +201,12 @@ export default function EditUserController() {
                     </label>
                     <input
                       type="email"
-                      disabled={
-                        profile?.role == "admin" ||
-                        profile?.role == "owner" ||
-                        profile?.id == id
-                          ? false
-                          : true
-                      }
+                      disabled={true}
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.email || ""}
@@ -229,8 +239,14 @@ export default function EditUserController() {
                         (event.target as any).value = null;
                       }}
                     />
-                    <div
-                      className="absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer"
+                    <button
+                      disabled={profile?.role != "user" ? false : true}
+                      className={classNames(
+                        "absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer",
+                        {
+                          "!cursor-not-allowed": profile?.role == "user",
+                        }
+                      )}
                       onClick={handleInputFile}
                     >
                       <svg
@@ -255,7 +271,7 @@ export default function EditUserController() {
                           d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"
                         />
                       </svg>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -284,9 +300,10 @@ export default function EditUserController() {
                           : true
                       }
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.address || ""}
@@ -305,7 +322,7 @@ export default function EditUserController() {
                     </label>
                     <select
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer",
                         {
                           "!cursor-not-allowed": profile?.role != "owner",
                         }
@@ -339,9 +356,10 @@ export default function EditUserController() {
                           : true
                       }
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.phone || ""}
@@ -368,9 +386,10 @@ export default function EditUserController() {
                           : true
                       }
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       value={curProfile?.zipcode || ""}
@@ -404,9 +423,10 @@ export default function EditUserController() {
                           : true
                       }
                       className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
-                          "!cursor-not-allowed": profile?.role == "user" && profile?.id != id,
+                          "!cursor-not-allowed":
+                            profile?.role == "user" && profile?.id != id,
                         }
                       )}
                       rows={4}

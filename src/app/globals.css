@@ -32,3 +32,8 @@
     flex: 10
 }
 
+.shadow-edit{
+-webkit-box-shadow: 14px 15px 10px -10px rgba(0, 0, 0, 0.2);
+    box-shadow: 14px 15px 10px -10px rgba(0, 0, 0, 0.2);
+}
+

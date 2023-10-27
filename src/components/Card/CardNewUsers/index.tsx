@@ -1,6 +1,26 @@
-import React from "react";
+"use client";
+
+import { onValue, ref } from "firebase/database";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { db } from "server/firebase";
 
 export default function CardNewUsers() {
+  const [userList, setUserList] = useState<IUser[] | null>();
+
+  useEffect(() => {
+    const userListRef = ref(db, "users");
+    onValue(userListRef, (snapshot) => {
+      const val = snapshot.val();
+      const data: IUser[] = Object.values(val);
+      setUserList(data);
+    });
+  }, []);
+
+  const sortedUser = userList
+    ?.sort((a, b) => a.createAt - b.createAt)
+    .slice(0, 5);
+
   return (
     <div>
       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
@@ -12,103 +32,50 @@ export default function CardNewUsers() {
               </h3>
             </div>
             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-              <button
+              <Link
+                href={"/users"}
                 className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear divansition-all duration-150"
                 type="button"
               >
                 See all
-              </button>
+              </Link>
             </div>
           </div>
         </div>
         <div className="w-full">
           {/* Projects table */}
-          <div className="items-center w-full bg-divansparent border-collapse">
-            <div className="flex w-full">
-              <div className="px-6 bg-blueGray-50 w-2/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+          <div className="items-center w-full bg-transparent border-collapse">
+            <div className="flex w-full flex-wrap">
+              <div className="px-4 w-full md:w-2/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                 Email
               </div>
-              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                 Full Name
               </div>
-              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                 Phone
               </div>
-              <div className="px-6 bg-blueGray-50 w-1/5 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                 Role
               </div>
             </div>
             <div>
-              <div className="flex w-full">
-                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  thuc@pro.com
+              {sortedUser?.map(({ email, name, phone, role, id }) => (
+                <div className="flex w-full flex-wrap" key={id}>
+                  <div className="px-4 w-full md:w-2/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    {email}
+                  </div>
+                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {name}
+                  </div>
+                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {phone}
+                  </div>
+                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {role}
+                  </div>
                 </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Phạm Tri Thức
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  0923012302
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Owner
-                </div>
-              </div>
-              <div className="flex w-full">
-                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  thuc09982@pro.com
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Nguyễn Minh Thức
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  0936825913
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Admin
-                </div>
-              </div>
-              <div className="flex w-full">
-                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  alabatrap@gmail.vui
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Anh Lý Bà Ba
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  0122384612
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  User
-                </div>
-              </div>
-              <div className="flex w-full">
-                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  vogiasieucap@vip.pro
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Ta Là Võ Giả
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  0999999999
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  User
-                </div>
-              </div>
-              <div className="flex w-full">
-                <div className="border-t-0 px-6 w-2/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  helloword@gmail.create
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Hello Word!
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  0000000000
-                </div>
-                <div className="border-t-0 px-6 w-1/5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Admin
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

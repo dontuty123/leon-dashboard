@@ -5,6 +5,7 @@ import Dashboard from "@/components/Dashboard/index";
 import { ICols } from "@/types/static.type";
 import { onValue, ref, remove } from "firebase/database";
 import { db } from "server/firebase";
+import { ratioCalculate } from "@/utils/calculate";
 
 export default function Users() {
   const collumn: ICols[] = [
@@ -47,11 +48,9 @@ export default function Users() {
   }, []);
 
   const handleDelete = (id: string) => {
-    console.log(id);
     const deleteUserRef = ref(db, "users/" + id);
     remove(deleteUserRef);
   };
-
   return (
     <div>
       <Dashboard

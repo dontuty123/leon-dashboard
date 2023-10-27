@@ -1,7 +1,6 @@
 /** @format */
 "use client";
 
-import { IProduct } from "@/types/product.type";
 import React, { useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
@@ -11,7 +10,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { addProduct } from "@/utils/product.apiCall";
 
 const initialProduct = {
-  category: "",
+  category: "shirt",
   description: "",
   image: "",
   name: "",
@@ -32,7 +31,8 @@ export default function AddProduct() {
     target,
   }:
     | React.ChangeEvent<HTMLInputElement>
-    | React.ChangeEvent<HTMLTextAreaElement>) => {
+    | React.ChangeEvent<HTMLTextAreaElement>
+    | React.ChangeEvent<HTMLSelectElement>) => {
     setProduct({
       ...product,
       [target.name]: target.value,
@@ -145,7 +145,7 @@ export default function AddProduct() {
                       </label>
                       <input
                         type="text"
-                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
+                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
                         value={product?.name}
                         name="name"
                         onChange={handleChangeInput}
@@ -160,7 +160,7 @@ export default function AddProduct() {
                       </label>
                       <InputNumber
                         type="text"
-                        classNameInput="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
+                        classNameInput="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
                         value={product?.quantity}
                         name="quantity"
                         onChange={handleChangeInput}
@@ -171,7 +171,7 @@ export default function AddProduct() {
                   <div className="  w-full h-fit lg:w-6/12 px-4 flex justify-center">
                     <div className="relative">
                       <img
-                        className=" w-40 h-40 rounded-full shadow-lg"
+                        className=" w-40 h-40 rounded-md shadow-edit"
                         src={
                           product?.image
                             ? product.image
@@ -230,13 +230,18 @@ export default function AddProduct() {
                       >
                         Category
                       </label>
-                      <input
-                        type="text"
-                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
-                        value={product?.category}
+                      <select
+                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer"
                         name="category"
+                        value={product?.category}
                         onChange={handleChangeInput}
-                      />
+                      >
+                        <option value="shirt">Shirt</option>
+                        <option value="pant">Pant</option>
+                        <option value="shoe">Shoe</option>
+                        <option value="accessory">Accessory</option>
+                        <option value="technological">Technological</option>
+                      </select>
                     </div>
                     <div className="relative w-full ">
                       <label
@@ -245,9 +250,9 @@ export default function AddProduct() {
                       >
                         Price
                       </label>
-                      <input
+                      <InputNumber
                         type="text"
-                        className="border-none py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
+                        classNameInput="border-none py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
                         value={product?.price}
                         name="price"
                         onChange={handleChangeInput}
@@ -271,7 +276,7 @@ export default function AddProduct() {
                         Description
                       </label>
                       <textarea
-                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
+                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150"
                         rows={4}
                         value={product?.description}
                         name="description"

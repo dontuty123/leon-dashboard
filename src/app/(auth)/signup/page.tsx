@@ -2,16 +2,19 @@
 "use client";
 
 import Button from "@/components/Button";
+import { AppContext } from "@/context/app.context";
 import { addUser } from "@/utils/login.apiCall";
+import { addTransaction } from "@/utils/product.apiCall";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { auth } from "server/firebase";
 import alo from "src/assets/images/signupimg.jpg";
 
 export default function Signup() {
+  const { profile } = useContext(AppContext);
   const [signupInfo, setSignupInfo] = useState<IUserSign | undefined>({
     email: "",
     password: "",

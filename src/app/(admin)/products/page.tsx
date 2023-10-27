@@ -1,7 +1,7 @@
 "use client";
 
 import Dashboard from "@/components/Dashboard";
-import { IProduct } from "@/types/product.type";
+
 import { ICols } from "@/types/static.type";
 import { onValue, ref, remove } from "firebase/database";
 import React, { useEffect, useState } from "react";
