@@ -59,6 +59,8 @@ export default function Users() {
         title="User Dashboard"
         preLink="users/edit"
         handleDelete={handleDelete}
+        currentModal="users"
+
       />
     </div>
   );

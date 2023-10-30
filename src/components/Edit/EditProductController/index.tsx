@@ -8,6 +8,7 @@ import { AppContext } from "@/context/app.context";
 import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import classNames from "classnames";
+import { formatCurrency } from "@/utils/utils";
 
 const initialProfile: IProduct = {
   createAt: 0,
@@ -20,7 +21,15 @@ const initialProfile: IProduct = {
   sold: 0,
 };
 
-export default function EditProductController() {
+interface IEditProductController {
+  id: string;
+  setID: (value: React.SetStateAction<string | null | undefined>) => void;
+}
+
+export default function EditProductController({
+  id,
+  setID,
+}: IEditProductController) {
   const { profile } = useContext(AppContext);
   const [curProduct, setCurProduct] = useState<IProduct>(initialProfile);
   const [file, setFile] = useState<File>();
@@ -30,7 +39,7 @@ export default function EditProductController() {
   }, [file]);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const { id } = useParams();
+  console.log(id);
 
   useEffect(() => {
     const getcurProduct = refDB(db, "products/" + id);
@@ -104,11 +113,13 @@ export default function EditProductController() {
         }
       );
       toast.success("Sửa thông tin thành công");
+      setID(null);
       toast.clearWaitingQueue();
     } else {
       update(refDB(db, "products/" + id), curProduct);
 
       toast.success("Sửa thông tin thành công");
+      setID(null);
       toast.clearWaitingQueue();
     }
     setTimeout(() => {
@@ -295,8 +306,8 @@ export default function EditProductController() {
                             profile?.role == "user" && profile?.id != id,
                         }
                       )}
-                      value={curProduct?.price || ""}
-                      name="phone"
+                      value={formatCurrency(curProduct?.price) || ""}
+                      name="price"
                       onChange={handleChangeInput}
                     />
                   </div>
@@ -325,8 +336,8 @@ export default function EditProductController() {
                             profile?.role == "user" && profile?.id != id,
                         }
                       )}
-                      value={curProduct?.quantity || ""}
-                      name="zipcode"
+                      value={formatCurrency(curProduct?.quantity) || ""}
+                      name="quantity"
                       onChange={handleChangeInput}
                     />
                   </div>
@@ -373,18 +384,27 @@ export default function EditProductController() {
                   <span className="text-gray-400 text-xs font-extralight">
                     Edit product
                   </span>
-                  <Button
-                    className={classNames(
-                      "bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md",
-                      {
-                        "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                          disabled,
-                      }
-                    )}
-                    contentButton="Submit"
-                    disabled={disabled}
-                    onClick={handleSubmit}
-                  />
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <Button
+                      className={classNames(
+                        "inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400  sm:ml-3 sm:w-auto",
+                        {
+                          "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
+                            disabled,
+                        }
+                      )}
+                      contentButton="Submit"
+                      disabled={disabled}
+                      onClick={handleSubmit}
+                    />
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      onClick={() => setID(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

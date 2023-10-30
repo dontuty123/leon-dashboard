@@ -22,18 +22,19 @@ const collumn: ICols[] = [
   },
   {
     field: "price",
-
+    isNumber: true,
     headerName: "Price",
     width: 120,
   },
   {
     field: "quantity",
-
+    isNumber: true,
     headerName: "In Stock",
     width: 150,
   },
   {
     field: "sold",
+    isNumber: true,
     headerName: "Sold",
     width: 120,
   },
@@ -66,6 +67,7 @@ export default function Products() {
         isAddBtn={true}
         addLink={`products/add`}
         handleDelete={handleDelete}
+        currentModal="products"
       />
     </div>
   );

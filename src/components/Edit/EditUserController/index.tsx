@@ -1,7 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Button from "@/components/Button";
-import { useParams } from "next/navigation";
 import { onValue, update, ref as refDB } from "firebase/database";
 import { auth, db, storageDB } from "server/firebase";
 import { AppContext } from "@/context/app.context";
@@ -24,7 +23,12 @@ const initialProfile = {
   zipcode: "",
 };
 
-export default function EditUserController() {
+interface IEditUserController {
+  id: string;
+  setID: (value: React.SetStateAction<string | null | undefined>) => void;
+}
+
+export default function EditUserController({ id, setID }: IEditUserController) {
   const { profile, setProfile } = useContext(AppContext);
   const [_, setCookie] = useCookies();
   const [curProfile, setCurProfile] = useState<IUser>(initialProfile);
@@ -34,8 +38,6 @@ export default function EditUserController() {
     return file ? URL.createObjectURL(file) : "";
   }, [file]);
   const inputFileRef = useRef<HTMLInputElement>(null);
-
-  const { id } = useParams();
 
   useEffect(() => {
     const getcurProfile = refDB(db, "users/" + id);
@@ -122,6 +124,7 @@ export default function EditUserController() {
         }
       );
       toast.success("Sửa thông tin thành công");
+      setID(null);
       toast.clearWaitingQueue();
     } else {
       update(refDB(db, "users/" + id), curProfile);
@@ -136,6 +139,7 @@ export default function EditUserController() {
           });
       }
       toast.success("Sửa thông tin thành công");
+      setID(null);
       toast.clearWaitingQueue();
     }
   };
@@ -440,18 +444,27 @@ export default function EditUserController() {
                   <span className="text-gray-400 text-xs font-extralight">
                     Edit curProfile
                   </span>
-                  <Button
-                    className={classNames(
-                      "bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md",
-                      {
-                        "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                          disabled,
-                      }
-                    )}
-                    contentButton="Submit"
-                    disabled={disabled}
-                    onClick={handleSubmit}
-                  />
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <Button
+                      className={classNames(
+                        "inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400  sm:ml-3 sm:w-auto",
+                        {
+                          "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
+                            disabled,
+                        }
+                      )}
+                      contentButton="Submit"
+                      disabled={disabled}
+                      onClick={handleSubmit}
+                    />
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      onClick={() => setID(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
