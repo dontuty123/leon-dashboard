@@ -4,7 +4,7 @@ import SideBar from "@/components/SideBar";
 import { AppProvider } from "@/context/app.context";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { ToastContainer } from "react-toastify";
 
@@ -20,9 +20,11 @@ export default function AuthenticateRoute({
   const [cookie] = useCookies();
   const router = useRouter();
 
-  if (cookie.user == null) {
-    router.push("/login");
-  }
+  useEffect(() => {
+    if (cookie.user == null) {
+      router.push("/login");
+    }
+  }, [cookie.user, router]);
 
   return (
     <div className="flex text-black">

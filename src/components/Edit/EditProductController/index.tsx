@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import classNames from "classnames";
 import { formatCurrency } from "@/utils/utils";
+import InfoSkeleton from "@/components/Skeleton/InfoSkeleton";
+import AboutSkeleton from "@/components/Skeleton/AboutSkeleton/idnex";
+import ContactInfoSkeleton from "@/components/Skeleton/ContactInfoSkeleton";
 
 const initialProfile: IProduct = {
   createAt: 0,
@@ -38,7 +41,12 @@ export default function EditProductController({
     return file ? URL.createObjectURL(file) : "";
   }, [file]);
   const inputFileRef = useRef<HTMLInputElement>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 200);
+  });
 
   useEffect(() => {
     const getcurProduct = refDB(db, "products/" + id);
@@ -62,7 +70,6 @@ export default function EditProductController({
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileFromLocal = event.target.files?.[0];
-    //1MB = 1048576 B
     if (
       fileFromLocal &&
       (fileFromLocal.size >= 1048576 || !fileFromLocal.type.includes("image"))
@@ -99,15 +106,11 @@ export default function EditProductController({
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log("File available at", downloadURL);
-
             const newProduct = {
               ...curProduct,
               image: downloadURL,
             };
-
             update(refDB(db, "products/" + id), newProduct);
-
-            // nếu sửa thông tin của bản thân thì save lại trên local storage và app context
           });
         }
       );
@@ -146,239 +149,249 @@ export default function EditProductController({
               <h6 className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                 Product information
               </h6>
-              <div className="flex flex-wrap items-center">
-                <div className="w-full lg:w-6/12 px-4 flex flex-col">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Product&apos;s name
-                    </label>
-                    <input
-                      type="text"
-                      disabled={
-                        profile?.role == "admin" ||
-                        profile?.role == "owner" ||
-                        profile?.id == id
-                          ? false
-                          : true
-                      }
-                      className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
-                        {
-                          "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
-                        }
-                      )}
-                      value={curProduct?.name || ""}
-                      name="name"
-                      onChange={handleChangeInput}
-                    />
-                  </div>
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Category
-                    </label>
-                    <select
-                      className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer",
-                        {
-                          "!cursor-not-allowed": profile?.role == "user",
-                        }
-                      )}
-                      name="category"
-                      disabled={profile?.role != "user" ? false : true}
-                      value={curProduct?.category}
-                      onChange={handleChangeInput}
-                    >
-                      <option value="shirt">Shirt</option>
-                      <option value="pant">Pant</option>
-                      <option value="shoe">Shoe</option>
-
-                      <option value="accessory">Accessory</option>
-                      <option value="technological">Technological</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="  w-full h-fit lg:w-6/12 px-4 flex justify-center">
-                  <div className="relative">
-                    <img
-                      className=" w-40 h-40 rounded-md shadow-edit"
-                      src={previewImg ? previewImg : curProduct?.image}
-                      alt="Rounded avatar"
-                    />
-                    <input
-                      className="hidden"
-                      type="file"
-                      accept=".jpg,.jpeg,.png"
-                      ref={inputFileRef}
-                      onChange={onFileChange}
-                      onClick={(event) => {
-                        (event.target as any).value = null;
-                      }}
-                    />
-                    <button
-                      disabled={profile?.role != "user" ? false : true}
-                      className={classNames(
-                        "absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer",
-                        {
-                          "!cursor-not-allowed": profile?.role == "user",
-                        }
-                      )}
-                      onClick={handleInputFile}
-                    >
-                      <svg
-                        className="w-5 h-5 mx-2 my-2 dark:text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 18"
+              {isLoading ? (
+                <InfoSkeleton />
+              ) : (
+                <div className="flex flex-wrap items-center">
+                  <div className="w-full lg:w-6/12 px-4 flex flex-col">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
-                        />
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"
-                        />
-                      </svg>
-                    </button>
+                        Product&apos;s name
+                      </label>
+                      <input
+                        type="text"
+                        disabled={
+                          profile?.role == "admin" ||
+                          profile?.role == "owner" ||
+                          profile?.id == id
+                            ? false
+                            : true
+                        }
+                        className={classNames(
+                          "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                          {
+                            "!cursor-not-allowed":
+                              profile?.role == "user" && profile?.id != id,
+                          }
+                        )}
+                        value={curProduct?.name || ""}
+                        name="name"
+                        onChange={handleChangeInput}
+                      />
+                    </div>
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Category
+                      </label>
+                      <select
+                        className={classNames(
+                          "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-pointer",
+                          {
+                            "!cursor-not-allowed": profile?.role == "user",
+                          }
+                        )}
+                        name="category"
+                        disabled={profile?.role != "user" ? false : true}
+                        value={curProduct?.category}
+                        onChange={handleChangeInput}
+                      >
+                        <option value="shirt">Shirt</option>
+                        <option value="pant">Pant</option>
+                        <option value="shoe">Shoe</option>
+
+                        <option value="accessory">Accessory</option>
+                        <option value="technological">Technological</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="  w-full h-fit lg:w-6/12 px-4 flex justify-center">
+                    <div className="relative">
+                      <img
+                        className=" w-40 h-40 rounded-md shadow-edit"
+                        src={previewImg ? previewImg : curProduct?.image}
+                        alt="Rounded avatar"
+                      />
+                      <input
+                        className="hidden"
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        ref={inputFileRef}
+                        onChange={onFileChange}
+                        onClick={(event) => {
+                          (event.target as any).value = null;
+                        }}
+                      />
+                      <button
+                        disabled={profile?.role != "user" ? false : true}
+                        className={classNames(
+                          "absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer",
+                          {
+                            "!cursor-not-allowed": profile?.role == "user",
+                          }
+                        )}
+                        onClick={handleInputFile}
+                      >
+                        <svg
+                          className="w-5 h-5 mx-2 my-2 dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 18"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                          />
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <hr className="mt-6 border-b-1 border-gray-300" />
 
               <div className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                 Contact Information
               </div>
-              <div className="flex flex-wrap">
-                <div className="w-full lg:w-4/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Sold
-                    </label>
-                    <input
-                      type="email"
-                      disabled={true}
-                      className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-not-allowed"
-                      value={curProduct?.sold || ""}
-                    />
+              {isLoading ? (
+                <ContactInfoSkeleton rows={5} />
+              ) : (
+                <div className="flex flex-wrap">
+                  <div className="w-full lg:w-4/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Sold
+                      </label>
+                      <input
+                        type="email"
+                        disabled={true}
+                        className="border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150 cursor-not-allowed"
+                        value={curProduct?.sold || ""}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="w-full lg:w-4/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Price
-                    </label>
-                    <input
-                      type="text"
-                      disabled={
-                        profile?.role == "admin" ||
-                        profile?.role == "owner" ||
-                        profile?.id == id
-                          ? false
-                          : true
-                      }
-                      className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
-                        {
-                          "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                  <div className="w-full lg:w-4/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Price
+                      </label>
+                      <input
+                        type="text"
+                        disabled={
+                          profile?.role == "admin" ||
+                          profile?.role == "owner" ||
+                          profile?.id == id
+                            ? false
+                            : true
                         }
-                      )}
-                      value={formatCurrency(curProduct?.price) || ""}
-                      name="price"
-                      onChange={handleChangeInput}
-                    />
+                        className={classNames(
+                          "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                          {
+                            "!cursor-not-allowed":
+                              profile?.role == "user" && profile?.id != id,
+                          }
+                        )}
+                        value={formatCurrency(curProduct?.price) || ""}
+                        name="price"
+                        onChange={handleChangeInput}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="w-full lg:w-4/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Quantity
-                    </label>
-                    <input
-                      type="text"
-                      disabled={
-                        profile?.role == "admin" ||
-                        profile?.role == "owner" ||
-                        profile?.id == id
-                          ? false
-                          : true
-                      }
-                      className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
-                        {
-                          "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                  <div className="w-full lg:w-4/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Quantity
+                      </label>
+                      <input
+                        type="text"
+                        disabled={
+                          profile?.role == "admin" ||
+                          profile?.role == "owner" ||
+                          profile?.id == id
+                            ? false
+                            : true
                         }
-                      )}
-                      value={formatCurrency(curProduct?.quantity) || ""}
-                      name="quantity"
-                      onChange={handleChangeInput}
-                    />
+                        className={classNames(
+                          "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                          {
+                            "!cursor-not-allowed":
+                              profile?.role == "user" && profile?.id != id,
+                          }
+                        )}
+                        value={formatCurrency(curProduct?.quantity) || ""}
+                        name="quantity"
+                        onChange={handleChangeInput}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-
+              )}
               <hr className="mt-6 border-b-1 border-gray-300" />
-
               <h6 className="text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                 About
               </h6>
               <div className="flex flex-wrap">
-                <div className="w-full lg:w-12/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Product Description
-                    </label>
-                    <textarea
-                      disabled={
-                        profile?.role == "admin" ||
-                        profile?.role == "owner" ||
-                        profile?.id == id
-                          ? false
-                          : true
-                      }
-                      className={classNames(
-                        "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
-                        {
-                          "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                {isLoading ? (
+                  <AboutSkeleton />
+                ) : (
+                  <div className="w-full lg:w-12/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Product Description
+                      </label>
+                      <textarea
+                        disabled={
+                          profile?.role == "admin" ||
+                          profile?.role == "owner" ||
+                          profile?.id == id
+                            ? false
+                            : true
                         }
-                      )}
-                      rows={4}
-                      value={curProduct?.description || ""}
-                      name="description"
-                      onChange={handleChangeInput}
-                    ></textarea>
+                        className={classNames(
+                          "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
+                          {
+                            "!cursor-not-allowed":
+                              profile?.role == "user" && profile?.id != id,
+                          }
+                        )}
+                        rows={4}
+                        value={curProduct?.description || ""}
+                        name="description"
+                        onChange={handleChangeInput}
+                      ></textarea>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="flex justify-between w-full lg:w-12/12 px-4 items-baseline">
                   <span className="text-gray-400 text-xs font-extralight">
                     Edit product

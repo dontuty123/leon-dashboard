@@ -5,9 +5,17 @@ import { formatCurrency } from "@/utils/utils";
 import { onValue, ref } from "firebase/database";
 import { db } from "server/firebase";
 import Link from "next/link";
+import TableSkeleton from "@/components/Skeleton/TableSkeleton";
 
 export default function CardNewProducts() {
   const [productList, setProductList] = useState<IProduct[] | null>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  });
 
   useEffect(() => {
     const productListRef = ref(db, "products");
@@ -43,37 +51,42 @@ export default function CardNewProducts() {
             </div>
           </div>
         </div>
-        <div className="block w-full">
-          {/* Projects table */}
-          <div className="items-center w-full bg-transparent border-collapse">
-            <div className="truncate">
-              <div className="flex flex-wrap">
-                <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Name
-                </div>
-                <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Category
-                </div>
-                <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                  Price
+
+        {isLoading ? (
+          <TableSkeleton rowSkeleton={7} />
+        ) : (
+          <div className="block w-full">
+            {/* Projects table */}
+            <div className="items-center w-full bg-transparent border-collapse">
+              <div className="truncate">
+                <div className="flex flex-wrap">
+                  <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                    Name
+                  </div>
+                  <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                    Category
+                  </div>
+                  <div className="px-4 md:w-1/3 w-full bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                    Price
+                  </div>
                 </div>
               </div>
+              {sortedProduct?.map(({ name, category, price, id }) => (
+                <div className="flex flex-wrap items-center w-full" key={id}>
+                  <div className="border-t-0 w-full md:w-1/3 px-4 truncate align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left font-semibold">
+                    {name}
+                  </div>
+                  <div className="border-t-0 w-full md:w-1/3 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {category}
+                  </div>
+                  <div className="border-t-0 w-full md:w-1/3 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {formatCurrency(price)}
+                  </div>
+                </div>
+              ))}
             </div>
-            {sortedProduct?.map(({ name, category, price, id }) => (
-              <div className="flex flex-wrap items-center w-full" key={id}>
-                <div className="border-t-0 w-full md:w-1/3 px-4 truncate align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left font-semibold">
-                  {name}
-                </div>
-                <div className="border-t-0 w-full md:w-1/3 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {category}
-                </div>
-                <div className="border-t-0 w-full md:w-1/3 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {formatCurrency(price)}
-                </div>
-              </div>
-            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ const firebaseConfig = initializeApp({
   databaseURL: "https://leon-4269b-default-rtdb.asia-southeast1.firebasedatabase.app"
 });
 
+
 export const auth = getAuth(firebaseConfig)
 
 export const db = getDatabase(firebaseConfig)

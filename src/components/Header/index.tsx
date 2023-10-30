@@ -10,13 +10,6 @@ import {
   revanueCalculate,
 } from "@/utils/calculate";
 
-interface ICard {
-  statTitleProduct: number;
-  statTitleUser: number;
-  statTitleSale: number;
-  statTitleTotalAmount: number;
-}
-
 export default function Header() {
   const [products, setProducts] = useState<IProduct[] | null>();
   const [transaction, setTransaction] = useState<ITransaction[] | null>();
@@ -52,7 +45,7 @@ export default function Header() {
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="NEW PRODUCT"
+                  statSubtitle="NEW PRODUCTS"
                   statTitle={compareCalculate(products as IProduct[])}
                   statPercent={ratioCalculate(products as IProduct[])}
                   statArrow={

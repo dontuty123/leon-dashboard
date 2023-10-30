@@ -11,7 +11,8 @@ import classNames from "classnames";
 import EditProductController from "../Edit/EditProductController";
 import EditUserController from "../Edit/EditUserController";
 import { formatCurrency } from "@/utils/utils";
-import  NewProduct  from "@/components/NewProduct";
+import NewProduct from "@/components/NewProduct";
+import TableSkeleton from "../Skeleton/TableSkeleton";
 
 interface IDashboard {
   curCols: ICols[];
@@ -40,7 +41,9 @@ export default function Dashboard({
   const [curPage, setCurPage] = useState(1);
   const [editID, setEditID] = useState<string | null>();
   const [deleteID, setDeleteID] = useState<string | null>();
-  const [isAddNewController, setIsAddNewController] = useState<boolean>(false);
+  const [isAddNewController, setIsAddNewController] = useState<boolean | null>(
+    false
+  );
   const [curUsers, setCurUsers] = useState<IUser[]>();
 
   //dựa trên số row của 1 page, chia lấy số pages và danh sách các user của trang thứ nhất.
@@ -224,7 +227,10 @@ export default function Dashboard({
                       <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                        onClick={() => handleDelete(deleteID)}
+                        onClick={() => {
+                          handleDelete(deleteID);
+                          setDeleteID(null);
+                        }}
                       >
                         Delete
                       </button>
@@ -241,6 +247,7 @@ export default function Dashboard({
               </div>
             </div>
           )}
+
           {curUsers?.map((itemrow, index) => (
             <div
               className="p-4 border-b gap-4 w-full hover:bg-gray-200/40 overflow-auto "

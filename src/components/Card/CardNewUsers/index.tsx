@@ -1,5 +1,6 @@
 "use client";
 
+import TableSkeleton from "@/components/Skeleton/TableSkeleton";
 import { onValue, ref } from "firebase/database";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -7,6 +8,13 @@ import { db } from "server/firebase";
 
 export default function CardNewUsers() {
   const [userList, setUserList] = useState<IUser[] | null>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  });
 
   useEffect(() => {
     const userListRef = ref(db, "users");
@@ -42,43 +50,47 @@ export default function CardNewUsers() {
             </div>
           </div>
         </div>
-        <div className="w-full">
-          {/* Projects table */}
-          <div className="items-center w-full bg-transparent border-collapse">
-            <div className="flex w-full flex-wrap">
-              <div className="px-4 w-full md:w-2/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                Email
-              </div>
-              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                Full Name
-              </div>
-              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                Phone
-              </div>
-              <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                Role
-              </div>
-            </div>
-            <div>
-              {sortedUser?.map(({ email, name, phone, role, id }) => (
-                <div className="flex w-full flex-wrap" key={id}>
-                  <div className="px-4 w-full md:w-2/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                    {email}
-                  </div>
-                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {name}
-                  </div>
-                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {phone}
-                  </div>
-                  <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {role}
-                  </div>
+        {isLoading ? (
+          <TableSkeleton rowSkeleton={7} />
+        ) : (
+          <div className="w-full">
+            {/* Projects table */}
+            <div className="items-center w-full bg-transparent border-collapse">
+              <div className="flex w-full flex-wrap">
+                <div className="px-4 w-full md:w-2/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                  Email
                 </div>
-              ))}
+                <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                  Full Name
+                </div>
+                <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                  Phone
+                </div>
+                <div className="px-4 w-full md:w-1/5 bg-blueGray-50 text-blueGray-500 truncate align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                  Role
+                </div>
+              </div>
+              <div>
+                {sortedUser?.map(({ email, name, phone, role, id }) => (
+                  <div className="flex w-full flex-wrap" key={id}>
+                    <div className="font-semibold px-4 w-full md:w-2/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                      {email}
+                    </div>
+                    <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      {name}
+                    </div>
+                    <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      {phone}
+                    </div>
+                    <div className="px-4 w-full md:w-1/5 border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      {role}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
