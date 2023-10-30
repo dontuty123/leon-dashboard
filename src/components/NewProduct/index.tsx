@@ -9,6 +9,10 @@ import { storageDB } from "server/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { addProduct } from "@/utils/product.apiCall";
 
+interface IAddProduct {
+  cancelBtn: (event: boolean) => void;
+}
+
 const initialProduct = {
   category: "shirt",
   description: "",
@@ -19,7 +23,7 @@ const initialProduct = {
   createAt: 0,
 };
 
-export default function AddProduct() {
+export default function AddProduct({ cancelBtn }: IAddProduct) {
   const [product, setProduct] = useState<IProduct>(initialProduct);
   const [file, setFile] = useState<File>();
   const previewImg = useMemo(() => {
@@ -117,7 +121,7 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="relative text-black mb-14 dark:bg-gray-800 dark:text-white">
+    <div className="relative w-[50%] text-black mb-14 dark:bg-gray-800 dark:text-white">
       <div>
         <>
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
@@ -288,11 +292,21 @@ export default function AddProduct() {
                     <span className="text-gray-400 text-xs font-extralight">
                       Add product
                     </span>
-                    <Button
-                      className="bg-blue-500 text-white w-[30%] mt-5 py-3 hover:bg-blue-400 cursor-pointer hover:border rounded-md"
-                      contentButton="Submit"
-                      onClick={handleSubmitBtn}
-                    />
+
+                    <div className="bg-gray-50 py-3 sm:flex sm:flex-row-reverse">
+                      <Button
+                        className="inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400  sm:ml-3 sm:w-auto"
+                        contentButton="Submit"
+                        onClick={handleSubmitBtn}
+                      />
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                        onClick={() => cancelBtn(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

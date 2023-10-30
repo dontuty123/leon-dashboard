@@ -11,6 +11,7 @@ import classNames from "classnames";
 import EditProductController from "../Edit/EditProductController";
 import EditUserController from "../Edit/EditUserController";
 import { formatCurrency } from "@/utils/utils";
+import  NewProduct  from "@/components/NewProduct";
 
 interface IDashboard {
   curCols: ICols[];
@@ -39,6 +40,7 @@ export default function Dashboard({
   const [curPage, setCurPage] = useState(1);
   const [editID, setEditID] = useState<string | null>();
   const [deleteID, setDeleteID] = useState<string | null>();
+  const [isAddNewController, setIsAddNewController] = useState<boolean>(false);
   const [curUsers, setCurUsers] = useState<IUser[]>();
 
   //dựa trên số row của 1 page, chia lấy số pages và danh sách các user của trang thứ nhất.
@@ -92,12 +94,12 @@ export default function Dashboard({
           <div>
             <span className="text-md font-semibold">{title}</span>
             {isAddBtn ? (
-              <Link href={addLink}>
-                <Button
-                  className="py-2 px-7  border-cyan-900 border cursor-pointer hover:bg-blue-300 hover:text-white rounded-md ml-10 font-semibold text-md"
-                  contentButton="➕ Add product"
-                />
-              </Link>
+              <button
+                className="py-2 px-7  border-cyan-900 border cursor-pointer hover:bg-blue-300 hover:text-white rounded-md ml-10 font-semibold text-md"
+                onClick={() => setIsAddNewController(!isAddNewController)}
+              >
+                ➕ Add product
+              </button>
             ) : (
               <></>
             )}
@@ -132,6 +134,23 @@ export default function Dashboard({
               <div className="font-semibold hover:border-x-2 w-48">Action</div>
             </div>
           </div>
+
+          {/* ADDNEW MODAL */}
+          {isAddNewController && (
+            <div
+              className="relative z-10"
+              aria-labelledby="modal-title"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div className="fixed inset-0 bg-gray-500/30 transition-opacity" />
+              <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div className="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+                  <NewProduct cancelBtn={setIsAddNewController} />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* EDIT MODAL */}
           {editID && (

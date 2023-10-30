@@ -1,5 +1,6 @@
 "use client";
 import Button from "@/components/Button";
+import { addTransaction } from "@/utils/product.apiCall";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { child, get, ref } from "firebase/database";
 import Link from "next/link";
@@ -55,6 +56,8 @@ export default function Login() {
         const errorMessage = error.message;
         setValidateError(errorMessage);
       });
+
+  
   };
 
   return (

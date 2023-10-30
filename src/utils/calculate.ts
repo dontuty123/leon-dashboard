@@ -26,7 +26,7 @@ export const ratioCalculate = (data: IUser[] | IProduct[]| ITransaction[]) => {
 
     const tiLeTangTruong = ((currentWeekData?.length - lastWeekData?.length) / lastWeekData?.length) * 100;
 
-    return tiLeTangTruong.toString();
+    return tiLeTangTruong.toFixed(2).toString();
 }
 
 export const compareCalculate = (data: IUser[] | IProduct[]| ITransaction[]) => {
@@ -59,5 +59,5 @@ export const ratioRevanueCalculate = (data: ITransaction[]) => {
 
   const percentGrow = ((curentWeekRevanue - lasetWeekRevanue) / lasetWeekRevanue) * 100
 
-  return percentGrow.toString();
+  return percentGrow.toFixed(2).toString();
 }

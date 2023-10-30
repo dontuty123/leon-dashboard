@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import Head from "next/head";
@@ -8,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppProvider } from "@/context/app.context";
 import { CookiesProvider } from "react-cookie";
+import AuthRedirect from "./AuthRedirect";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +28,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <CookiesProvider>
           <div className="bg-gray-100">
-            <AppProvider>{children}</AppProvider>
+            <AppProvider>
+              <AuthRedirect>{children}</AuthRedirect>
+            </AppProvider>
             <ToastContainer autoClose={1000} />
           </div>
 

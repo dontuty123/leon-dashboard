@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import classNames from "classnames";
 import { useCookies } from "react-cookie";
-import { User, updateEmail, updateProfile } from "firebase/auth";
+import { User, updateEmail } from "firebase/auth";
+import { useParams } from "next/navigation";
 
 const initialProfile = {
   address: "",
@@ -24,8 +25,8 @@ const initialProfile = {
 };
 
 interface IEditUserController {
-  id: string;
-  setID: (value: React.SetStateAction<string | null | undefined>) => void;
+  id?: string;
+  setID?: (value: React.SetStateAction<string | null | undefined>) => void;
 }
 
 export default function EditUserController({ id, setID }: IEditUserController) {
@@ -39,13 +40,16 @@ export default function EditUserController({ id, setID }: IEditUserController) {
   }, [file]);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
+  const editMeID = useParams();
+  const curID = id ? id : editMeID.id;
+
   useEffect(() => {
-    const getcurProfile = refDB(db, "users/" + id);
+    const getcurProfile = refDB(db, "users/" + curID);
     onValue(getcurProfile, (snapshot) => {
       const data = snapshot.val();
       setCurProfile(data);
     });
-  }, [id]);
+  }, [id, editMeID?.id]);
 
   const handleChangeInput = ({
     target,
@@ -112,7 +116,6 @@ export default function EditUserController({ id, setID }: IEditUserController) {
             if (profile?.id == id) {
               updateEmail(auth.currentUser as User, newProfile.email)
                 .then(() => {
-                  console.log("success");
                   setProfile(newProfile);
                   setCookie("user", newProfile);
                 })
@@ -124,7 +127,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
         }
       );
       toast.success("Sửa thông tin thành công");
-      setID(null);
+      setID && setID(null);
       toast.clearWaitingQueue();
     } else {
       update(refDB(db, "users/" + id), curProfile);
@@ -139,7 +142,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
           });
       }
       toast.success("Sửa thông tin thành công");
-      setID(null);
+      setID && setID(null);
       toast.clearWaitingQueue();
     }
   };
@@ -180,7 +183,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                       disabled={
                         profile?.role == "admin" ||
                         profile?.role == "owner" ||
-                        profile?.id == id
+                        profile?.id == curID
                           ? false
                           : true
                       }
@@ -188,7 +191,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       value={curProfile?.name || ""}
@@ -210,7 +213,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       value={curProfile?.email || ""}
@@ -299,7 +302,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                       disabled={
                         profile?.role == "admin" ||
                         profile?.role == "owner" ||
-                        profile?.id == id
+                        profile?.id == curID
                           ? false
                           : true
                       }
@@ -307,7 +310,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       value={curProfile?.address || ""}
@@ -355,7 +358,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                       disabled={
                         profile?.role == "admin" ||
                         profile?.role == "owner" ||
-                        profile?.id == id
+                        profile?.id == curID
                           ? false
                           : true
                       }
@@ -363,7 +366,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       value={curProfile?.phone || ""}
@@ -385,7 +388,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                       disabled={
                         profile?.role == "admin" ||
                         profile?.role == "owner" ||
-                        profile?.id == id
+                        profile?.id == curID
                           ? false
                           : true
                       }
@@ -393,7 +396,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       value={curProfile?.zipcode || ""}
@@ -422,7 +425,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                       disabled={
                         profile?.role == "admin" ||
                         profile?.role == "owner" ||
-                        profile?.id == id
+                        profile?.id == curID
                           ? false
                           : true
                       }
@@ -430,7 +433,7 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "border-none px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring-1 focus:ring-gray-400 w-full ease-linear transition-all duration-150",
                         {
                           "!cursor-not-allowed":
-                            profile?.role == "user" && profile?.id != id,
+                            profile?.role == "user" && profile?.id != curID,
                         }
                       )}
                       rows={4}
@@ -444,26 +447,44 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                   <span className="text-gray-400 text-xs font-extralight">
                     Edit curProfile
                   </span>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <Button
-                      className={classNames(
-                        "inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400  sm:ml-3 sm:w-auto",
-                        {
-                          "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                            disabled,
-                        }
-                      )}
-                      contentButton="Submit"
-                      disabled={disabled}
-                      onClick={handleSubmit}
-                    />
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => setID(null)}
-                    >
-                      Cancel
-                    </button>
+                  <div className="bg-gray-50 sm:flex sm:flex-row-reverse">
+                    {setID ? (
+                      <div className="py-3">
+                        {" "}
+                        <Button
+                          className={classNames(
+                            "inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 mr-3 sm:ml-3 sm:w-auto",
+                            {
+                              "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
+                                disabled,
+                            }
+                          )}
+                          contentButton="Submit"
+                          disabled={disabled}
+                          onClick={handleSubmit}
+                        />
+                        <button
+                          type="button"
+                          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                          onClick={() => setID(null)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <Button
+                        className={classNames(
+                          "bg-blue-500 text-white mt-5 py-3 px-14 hover:bg-blue-400 cursor-pointer hover:border rounded-md",
+                          {
+                            "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
+                              disabled,
+                          }
+                        )}
+                        contentButton="Submit"
+                        disabled={disabled}
+                        onClick={handleSubmit}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

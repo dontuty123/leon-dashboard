@@ -43,6 +43,7 @@ export default function Users() {
     onValue(userListRef, (snapshot) => {
       const val = snapshot.val();
       const data: IUser[] = Object.values(val);
+      data.sort((a, b) => b.createAt - a.createAt);
       setUserList(data);
     });
   }, []);
@@ -60,7 +61,6 @@ export default function Users() {
         preLink="users/edit"
         handleDelete={handleDelete}
         currentModal="users"
-
       />
     </div>
   );

@@ -48,6 +48,7 @@ export default function Products() {
     onValue(productListRef, (snapshot) => {
       const val = snapshot.val();
       const data: IProduct[] = Object.values(val);
+      data.sort((a, b) => b.createAt - a.createAt);
       setProductList(data);
     });
   }, []);

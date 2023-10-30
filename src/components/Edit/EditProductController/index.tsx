@@ -39,7 +39,6 @@ export default function EditProductController({
   }, [file]);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  console.log(id);
 
   useEffect(() => {
     const getcurProduct = refDB(db, "products/" + id);

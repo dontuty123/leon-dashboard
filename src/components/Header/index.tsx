@@ -18,8 +18,6 @@ interface ICard {
 }
 
 export default function Header() {
-  const [quantity, setQuantity] = useState<ICard | null>();
-  const [percent, setPercent] = useState<ICard | null>();
   const [products, setProducts] = useState<IProduct[] | null>();
   const [transaction, setTransaction] = useState<ITransaction[] | null>();
   const [users, setUsers] = useState<IUser[] | null>();
@@ -45,7 +43,6 @@ export default function Header() {
       setTransaction(data);
     });
   }, []);
-
 
   return (
     <>
@@ -88,13 +85,11 @@ export default function Header() {
                   statSubtitle="NEW USERS"
                   statTitle={compareCalculate(users as IUser[])}
                   statArrow={
-                    Number(ratioCalculate(products as IProduct[])) > 0
-                      ? "up"
-                      : "down"
+                    Number(ratioCalculate(users as IUser[])) > 0 ? "up" : "down"
                   }
                   statPercent={ratioCalculate(users as IUser[])}
                   statPercentColor={
-                    Number(ratioCalculate(products as IProduct[])) > 0
+                    Number(ratioCalculate(users as IUser[])) > 0
                       ? "text-green-500"
                       : "text-red-500"
                   }
@@ -159,7 +154,13 @@ export default function Header() {
                   statPercent={ratioRevanueCalculate(
                     transaction as ITransaction[]
                   )}
-                  statPercentColor="text-blue-500"
+                  statPercentColor={
+                    Number(
+                      ratioRevanueCalculate(transaction as ITransaction[])
+                    ) > 0
+                      ? "text-blue-500"
+                      : "text-red-500"
+                  }
                   statDescripiron="Since last week"
                   statIconName={
                     <svg
