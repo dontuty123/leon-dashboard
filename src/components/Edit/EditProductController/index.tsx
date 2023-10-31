@@ -1,17 +1,15 @@
 "use client";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Button from "@/components/Button";
-import { useParams } from "next/navigation";
-import { onValue, update, ref as refDB } from "firebase/database";
-import { db, storageDB } from "server/firebase";
+import { onValue, ref as refDB } from "firebase/database";
+import { db } from "server/firebase";
 import { AppContext } from "@/context/app.context";
-import { toast } from "react-toastify";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import classNames from "classnames";
 import { formatCurrency } from "@/utils/utils";
 import InfoSkeleton from "@/components/Skeleton/InfoSkeleton";
 import AboutSkeleton from "@/components/Skeleton/AboutSkeleton/idnex";
 import ContactInfoSkeleton from "@/components/Skeleton/ContactInfoSkeleton";
+import { handleFileChange, handleUploadFile } from "@/utils/fileUpload";
 
 const initialProfile: IProduct = {
   createAt: 0,
@@ -69,17 +67,7 @@ export default function EditProductController({
   };
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromLocal = event.target.files?.[0];
-    if (
-      fileFromLocal &&
-      (fileFromLocal.size >= 1048576 || !fileFromLocal.type.includes("image"))
-    ) {
-      toast.error(
-        "File không đúng định dạng quy định (Kích thước > 1mb hoặc không phải là ảnh"
-      );
-    } else {
-      setFile(fileFromLocal);
-    }
+    handleFileChange(event, setFile);
   };
 
   const handleInputFile = () => {
@@ -87,46 +75,16 @@ export default function EditProductController({
   };
 
   const handleSubmit = () => {
-    setDisabled(true);
-    toast.dismiss();
-    if (file) {
-      const storagePath = "product/" + file.name;
-      const storageRef = ref(storageDB, storagePath);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            const newProduct = {
-              ...curProduct,
-              image: downloadURL,
-            };
-            update(refDB(db, "products/" + id), newProduct);
-          });
-        }
-      );
-      toast.success("Sửa thông tin thành công");
-      setID(null);
-      toast.clearWaitingQueue();
-    } else {
-      update(refDB(db, "products/" + id), curProduct);
-
-      toast.success("Sửa thông tin thành công");
-      setID(null);
-      toast.clearWaitingQueue();
-    }
-    setTimeout(() => {
-      setDisabled(false);
-    }, 1000);
+    handleUploadFile({
+      curData: curProduct,
+      file,
+      id,
+      setDisabled,
+      setID,
+      dbPath: "products/",
+      filePath: "product/",
+      uploadImgKey: "image",
+    });
   };
 
   return (
@@ -136,12 +94,10 @@ export default function EditProductController({
           <div className="rounded-t bg-white mb-0 px-6 py-6 border-b-2">
             <div className="text-center flex justify-between">
               <h6 className="text-gray-700 text-xl font-bold">Edit Product</h6>
-              <button
+              <Button
                 className="bg-gray-700 transition-all active:bg-gray-600 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear duration-150"
-                type="button"
-              >
-                Settings
-              </button>
+                contentButton="Settings"
+              />
             </div>
           </div>
           <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-white border-collapse">
@@ -409,13 +365,11 @@ export default function EditProductController({
                       disabled={disabled}
                       onClick={handleSubmit}
                     />
-                    <button
-                      type="button"
+                    <Button
+                      contentButton="Cancel"
                       className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => setID(null)}
-                    >
-                      Cancel
-                    </button>
+                    />
                   </div>
                 </div>
               </div>

@@ -12,6 +12,7 @@ import { useParams } from "next/navigation";
 import InfoSkeleton from "@/components/Skeleton/InfoSkeleton";
 import ContactInfoSkeleton from "@/components/Skeleton/ContactInfoSkeleton";
 import AboutSkeleton from "@/components/Skeleton/AboutSkeleton/idnex";
+import { handleUploadFile } from "@/utils/fileUpload";
 const initialProfile = {
   address: "",
   avatar: "",
@@ -83,52 +84,65 @@ export default function EditUserController({ id, setID }: IEditUserController) {
     inputFileRef.current?.click();
   };
   const handleSubmit = () => {
-    setDisabled(true);
-    setTimeout(() => {
-      setDisabled(false);
-    }, 1000);
-    toast.dismiss();
-    if (file) {
-      const storagePath = "profile/" + file.name;
-      const storageRef = ref(storageDB, storagePath);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
+    handleUploadFile({
+      curData: curProfile,
+      dbPath: "users/",
+      file: file,
+      filePath: "profile/",
+      id: curID,
+      setDisabled,
+      setID,
+      profile: profile,
+      setCookie,
+      setProfile,
+      uploadImgKey: "avatar",
+    });
+    // setDisabled(true);
+    // setTimeout(() => {
+    //   setDisabled(false);
+    // }, 1000);
+    // toast.dismiss();
+    // if (file) {
+    //   const storagePath = "profile/" + file.name;
+    //   const storageRef = ref(storageDB, storagePath);
+    //   const uploadTask = uploadBytesResumable(storageRef, file);
+    //   uploadTask.on(
+    //     "state_changed",
+    //     (snapshot) => {
+    //       const progress =
+    //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //       console.log("Upload is " + progress + "% done");
+    //     },
+    //     (error) => {
+    //       console.log(error);
+    //     },
+    //     () => {
+    //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //         console.log("File available at", downloadURL);
 
-            const newProfile = {
-              ...curProfile,
-              avatar: downloadURL,
-            };
-            update(refDB(db, "users/" + curID), newProfile);
-            setProfile(newProfile);
-            setCookie("user", newProfile);
-          });
-        }
-      );
-      toast.success("Sửa thông tin thành công");
-      setID && setID(null);
-      toast.clearWaitingQueue();
-    } else {
-      update(refDB(db, "users/" + curID), curProfile);
-      if (profile?.id == curID) {
-        setProfile(curProfile);
-        setCookie("user", curProfile);
-      }
-      toast.success("Sửa thông tin thành công");
-      setID && setID(null);
-      toast.clearWaitingQueue();
-    }
+    //         const newProfile = {
+    //           ...curProfile,
+    //           avatar: downloadURL,
+    //         };
+    //         update(refDB(db, "users/" + curID), newProfile);
+    //         setProfile(newProfile);
+    //         setCookie("user", newProfile);
+    //       });
+    //     }
+    //   );
+    //   toast.success("Sửa thông tin thành công");
+    //   setID && setID(null);
+    //   toast.clearWaitingQueue();
+    // } else {
+    //   update(refDB(db, "users/" + curID), curProfile);
+    //   if (profile?.id == curID) {
+    //     setProfile(curProfile);
+    //     setCookie("user", curProfile);
+    //   }
+    //   toast.success("Sửa thông tin thành công");
+    //   setID && setID(null);
+    //   toast.clearWaitingQueue();
+    // }
   };
   return (
     <div>

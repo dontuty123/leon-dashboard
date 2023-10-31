@@ -3,6 +3,7 @@ import classNames from "classnames";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import Button from "@/components/Button";
 
 interface IDropdown {
   profile: IUser | null;
@@ -96,12 +97,11 @@ export default function Dropdown({ profile, setProfile }: IDropdown) {
               </li>
             </ul>
             <div className="pb-2">
-              <button
+              <Button
                 onClick={handleSignOut}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-              >
-                Sign out
-              </button>
+                contentButton="Sign out"
+              />
             </div>
           </div>
         </div>

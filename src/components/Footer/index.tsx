@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function Footer() {
@@ -9,47 +10,47 @@ export default function Footer() {
           <div className="w-full md:w-4/12 px-4">
             <div className="text-sm text-white hover:text-blue-300 font-semibold py-1 text-center md:text-left">
               Copyright © {new Date().getFullYear()}{" "}
-              <a
+              <Link
                 href="/"
                 className=" hover:text-blue-300 text-sm font-semibold py-1"
               >
                 Thuc Pham
-              </a>
+              </Link>
             </div>
           </div>
           <div className="w-full md:w-8/12 px-4">
             <div className="flex flex-wrap list-none md:justify-end  justify-center">
               <div>
-                <a
+                <Link
                   href="/"
                   className=" hover:text-blue-300 text-sm font-semibold block py-1 px-3"
                 >
                   Thuc Pham
-                </a>
+                </Link>
               </div>
               <div>
-                <a
+                <Link
                   href="/"
                   className=" hover:text-blue-300 text-sm font-semibold block py-1 px-3"
                 >
                   About me
-                </a>
+                </Link>
               </div>
               <div>
-                <a
+                <Link
                   href="/"
                   className=" hover:text-blue-300 text-sm font-semibold block py-1 px-3"
                 >
                   Blog
-                </a>
+                </Link>
               </div>
               <div>
-                <a
+                <Link
                   href="/"
                   className=" hover:text-blue-300 text-sm font-semibold block py-1 px-3"
                 >
                   Hello there,
-                </a>
+                </Link>
               </div>
             </div>
           </div>

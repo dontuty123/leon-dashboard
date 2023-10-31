@@ -64,9 +64,7 @@ export default function Products() {
         curCols={collumn}
         curRows={productList ? productList : []}
         title="Product Dashboard"
-        preLink="products/edit"
         isAddBtn={true}
-        addLink={`products/add`}
         handleDelete={handleDelete}
         currentModal="products"
       />
