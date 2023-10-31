@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-wrap items-center md:justify-between justify-center">
           <div className="w-full md:w-4/12 px-4">
             <div className="text-sm text-white hover:text-blue-300 font-semibold py-1 text-center md:text-left">
-              Copyright © {new Date().getFullYear()}{" "}
+              Copyright © {new Date().getFullYear()}
               <Link
                 href="/"
                 className=" hover:text-blue-300 text-sm font-semibold py-1"

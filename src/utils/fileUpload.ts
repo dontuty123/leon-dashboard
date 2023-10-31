@@ -77,6 +77,7 @@ export const handleUploadFile = ({curData,file,id,setDisabled,setID,dbPath,fileP
       toast.success("Sửa thông tin thành công");
       setID && setID(null);
       toast.clearWaitingQueue();
-    }
+  }
+  
 
 }

@@ -352,24 +352,30 @@ export default function EditProductController({
                   <span className="text-gray-400 text-xs font-extralight">
                     Edit product
                   </span>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <div className="bg-gray-50 pl-4 py-3 sm:flex">
                     <Button
                       className={classNames(
-                        "inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400  sm:ml-3 sm:w-auto",
+                        "inline-flex w-full justify-center cursor-pointer rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400   sm:w-auto",
                         {
                           "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                            disabled,
+                            disabled ||
+                            (profile?.role == "user" && profile?.id != id),
                         }
                       )}
                       contentButton="Submit"
-                      disabled={disabled}
+                      disabled={
+                        disabled ||
+                        (profile?.role == "user" && profile?.id != id)
+                      }
                       onClick={handleSubmit}
                     />
-                    <Button
-                      contentButton="Cancel"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex sm:ml-3 w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => setID(null)}
-                    />
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
               </div>

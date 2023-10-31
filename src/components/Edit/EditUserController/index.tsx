@@ -90,59 +90,13 @@ export default function EditUserController({ id, setID }: IEditUserController) {
       file: file,
       filePath: "profile/",
       id: curID,
-      setDisabled,
+      setDisabled: setDisabled,
       setID,
       profile: profile,
       setCookie,
       setProfile,
       uploadImgKey: "avatar",
     });
-    // setDisabled(true);
-    // setTimeout(() => {
-    //   setDisabled(false);
-    // }, 1000);
-    // toast.dismiss();
-    // if (file) {
-    //   const storagePath = "profile/" + file.name;
-    //   const storageRef = ref(storageDB, storagePath);
-    //   const uploadTask = uploadBytesResumable(storageRef, file);
-    //   uploadTask.on(
-    //     "state_changed",
-    //     (snapshot) => {
-    //       const progress =
-    //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //       console.log("Upload is " + progress + "% done");
-    //     },
-    //     (error) => {
-    //       console.log(error);
-    //     },
-    //     () => {
-    //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //         console.log("File available at", downloadURL);
-
-    //         const newProfile = {
-    //           ...curProfile,
-    //           avatar: downloadURL,
-    //         };
-    //         update(refDB(db, "users/" + curID), newProfile);
-    //         setProfile(newProfile);
-    //         setCookie("user", newProfile);
-    //       });
-    //     }
-    //   );
-    //   toast.success("Sửa thông tin thành công");
-    //   setID && setID(null);
-    //   toast.clearWaitingQueue();
-    // } else {
-    //   update(refDB(db, "users/" + curID), curProfile);
-    //   if (profile?.id == curID) {
-    //     setProfile(curProfile);
-    //     setCookie("user", curProfile);
-    //   }
-    //   toast.success("Sửa thông tin thành công");
-    //   setID && setID(null);
-    //   toast.clearWaitingQueue();
-    // }
   };
   return (
     <div>
@@ -245,11 +199,12 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                     }}
                   />
                   <button
-                    disabled={profile?.role != "user" ? false : true}
+                    disabled={profile?.role == "user" && profile?.id != curID}
                     className={classNames(
                       "absolute h-15 w-15 bottom-1 right-1 bg-slate-400 hover:bg-slate-500 rounded-full text-white cursor-pointer",
                       {
-                        "!cursor-not-allowed": profile?.role == "user",
+                        "!cursor-not-allowed":
+                          profile?.role == "user" && profile?.id != curID,
                       }
                     )}
                     onClick={handleInputFile}
@@ -458,11 +413,15 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                         "inline-flex w-full justify-center cursor-pointer rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 mr-3 sm:ml-3 sm:w-auto",
                         {
                           "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                            disabled || profile?.role == "user",
+                            disabled ||
+                            (profile?.role == "user" && profile?.id != curID),
                         }
                       )}
                       contentButton="Submit"
-                      disabled={disabled || profile?.role == "user"}
+                      disabled={
+                        disabled ||
+                        (profile?.role == "user" && profile?.id != curID)
+                      }
                       onClick={handleSubmit}
                     />
                     <button
@@ -478,16 +437,16 @@ export default function EditUserController({ id, setID }: IEditUserController) {
                     className={classNames(
                       "bg-blue-500 text-white mt-5 py-3 px-14 hover:bg-blue-400 cursor-pointer hover:border rounded-md",
                       {
-                        "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500":
-                          disabled ||
-                          profile?.role == "user" ||
-                          profile?.id == curID
-                            ? false
-                            : true,
+                        "!cursor-not-allowed !bg-gray-400 !hover:bg-gray-500": disabled ||
+                        (profile?.role == "user" && profile?.id != curID)
+                      
                       }
                     )}
                     contentButton="Submit"
-                    disabled={disabled || profile?.id == curID ? false : true}
+                    disabled={
+                        disabled ||
+                        (profile?.role == "user" && profile?.id != curID)
+                      }
                     onClick={handleSubmit}
                   />
                 )}
