@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Before we start
+
+First thing you need to know that when you sign up new user, it mean that you're in user role and unable to edit or delete other users. But don't be upsad, your role still can be change if you can convince the owner some how XOXO.
+
+When you have admin role, you can edit, delete, add user of products but you can't change your role or even others.
+
+Finaly, we got Owner. this guy can do any thing posible in our applycation.
+
 ## Getting Started
 
 First, run the development server:
